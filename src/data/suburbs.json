@@ -1,0 +1,612 @@
+{
+"regions": [
+{
+"id": "inner",
+"label": "Melbourne CBD & Inner North",
+"suburbs": [
+[
+"Melbourne",
+"3000"
+],
+[
+"East Melbourne",
+"3002"
+],
+[
+"West Melbourne",
+"3003"
+],
+[
+"Southbank",
+"3006"
+],
+[
+"Docklands",
+"3008"
+],
+[
+"Kensington",
+"3031"
+],
+[
+"Flemington",
+"3031"
+],
+[
+"North Melbourne",
+"3051"
+],
+[
+"Parkville",
+"3052"
+],
+[
+"Carlton",
+"3053"
+],
+[
+"Carlton North",
+"3054"
+],
+[
+"Brunswick",
+"3056"
+],
+[
+"Brunswick East",
+"3057"
+],
+[
+"Coburg",
+"3058"
+],
+[
+"Fitzroy",
+"3065"
+],
+[
+"Collingwood",
+"3066"
+],
+[
+"Abbotsford",
+"3067"
+],
+[
+"Fitzroy North",
+"3068"
+],
+[
+"Clifton Hill",
+"3068"
+],
+[
+"Northcote",
+"3070"
+],
+[
+"Thornbury",
+"3071"
+],
+[
+"Preston",
+"3072"
+],
+[
+"Reservoir",
+"3073"
+],
+[
+"Thomastown",
+"3074"
+],
+[
+"Fairfield",
+"3078"
+],
+[
+"Alphington",
+"3078"
+],
+[
+"Ivanhoe",
+"3079"
+],
+[
+"Heidelberg",
+"3084"
+],
+[
+"Macleod",
+"3085"
+],
+[
+"Bundoora",
+"3083"
+],
+[
+"Kingsbury",
+"3083"
+],
+[
+"Richmond",
+"3121"
+],
+[
+"Cremorne",
+"3121"
+],
+[
+"South Melbourne",
+"3205"
+],
+[
+"Albert Park",
+"3206"
+],
+[
+"Port Melbourne",
+"3207"
+]
+]
+},
+{
+"id": "east",
+"label": "Eastern Suburbs",
+"suburbs": [
+[
+"Kew",
+"3101"
+],
+[
+"Kew East",
+"3102"
+],
+[
+"Balwyn",
+"3103"
+],
+[
+"Balwyn North",
+"3104"
+],
+[
+"Bulleen",
+"3105"
+],
+[
+"Templestowe",
+"3106"
+],
+[
+"Templestowe Lower",
+"3107"
+],
+[
+"Doncaster",
+"3108"
+],
+[
+"Doncaster East",
+"3109"
+],
+[
+"Donvale",
+"3111"
+],
+[
+"Warrandyte",
+"3113"
+],
+[
+"Chirnside Park",
+"3116"
+],
+[
+"Hawthorn",
+"3122"
+],
+[
+"Hawthorn East",
+"3123"
+],
+[
+"Camberwell",
+"3124"
+],
+[
+"Burwood",
+"3125"
+],
+[
+"Canterbury",
+"3126"
+],
+[
+"Surrey Hills",
+"3127"
+],
+[
+"Box Hill",
+"3128"
+],
+[
+"Box Hill South",
+"3128"
+],
+[
+"Box Hill North",
+"3129"
+],
+[
+"Blackburn",
+"3130"
+],
+[
+"Blackburn North",
+"3130"
+],
+[
+"Nunawading",
+"3131"
+],
+[
+"Forest Hill",
+"3131"
+],
+[
+"Mitcham",
+"3132"
+],
+[
+"Vermont",
+"3133"
+],
+[
+"Vermont South",
+"3133"
+],
+[
+"Ringwood",
+"3134"
+],
+[
+"Ringwood North",
+"3134"
+],
+[
+"Ringwood East",
+"3135"
+],
+[
+"Heathmont",
+"3135"
+],
+[
+"Croydon",
+"3136"
+],
+[
+"Kilsyth",
+"3137"
+],
+[
+"Mooroolbark",
+"3138"
+],
+[
+"Lilydale",
+"3140"
+],
+[
+"Mount Waverley",
+"3149"
+],
+[
+"Glen Waverley",
+"3150"
+],
+[
+"Burwood East",
+"3151"
+],
+[
+"Wantirna",
+"3152"
+],
+[
+"Wantirna South",
+"3152"
+],
+[
+"Bayswater",
+"3153"
+],
+[
+"Boronia",
+"3155"
+],
+[
+"Ferntree Gully",
+"3156"
+],
+[
+"Rowville",
+"3178"
+],
+[
+"Knoxfield",
+"3180"
+]
+]
+},
+{
+"id": "south",
+"label": "South & Bayside",
+"suburbs": [
+[
+"South Yarra",
+"3141"
+],
+[
+"Toorak",
+"3142"
+],
+[
+"Armadale",
+"3143"
+],
+[
+"Malvern",
+"3144"
+],
+[
+"Malvern East",
+"3145"
+],
+[
+"Glen Iris",
+"3146"
+],
+[
+"Ashburton",
+"3147"
+],
+[
+"Caulfield North",
+"3161"
+],
+[
+"Caulfield",
+"3162"
+],
+[
+"Carnegie",
+"3163"
+],
+[
+"Murrumbeena",
+"3163"
+],
+[
+"Glen Huntly",
+"3163"
+],
+[
+"Bentleigh East",
+"3165"
+],
+[
+"Prahran",
+"3181"
+],
+[
+"Windsor",
+"3181"
+],
+[
+"St Kilda",
+"3182"
+],
+[
+"Balaclava",
+"3183"
+],
+[
+"Elwood",
+"3184"
+],
+[
+"Elsternwick",
+"3185"
+],
+[
+"Brighton",
+"3186"
+],
+[
+"Brighton East",
+"3187"
+],
+[
+"Hampton",
+"3188"
+],
+[
+"Moorabbin",
+"3189"
+],
+[
+"Highett",
+"3190"
+],
+[
+"Sandringham",
+"3191"
+],
+[
+"Cheltenham",
+"3192"
+],
+[
+"Black Rock",
+"3193"
+],
+[
+"Beaumaris",
+"3193"
+],
+[
+"Mentone",
+"3194"
+],
+[
+"Mordialloc",
+"3195"
+],
+[
+"Parkdale",
+"3195"
+],
+[
+"Aspendale",
+"3195"
+],
+[
+"Braeside",
+"3195"
+],
+[
+"Chelsea",
+"3196"
+],
+[
+"Edithvale",
+"3196"
+],
+[
+"Heatherton",
+"3202"
+],
+[
+"Bentleigh",
+"3204"
+],
+[
+"McKinnon",
+"3204"
+],
+[
+"Ormond",
+"3204"
+]
+]
+},
+{
+"id": "south-east",
+"label": "South-East",
+"suburbs": [
+[
+"Chadstone",
+"3148"
+],
+[
+"Wheelers Hill",
+"3150"
+],
+[
+"Oakleigh",
+"3166"
+],
+[
+"Oakleigh East",
+"3166"
+],
+[
+"Huntingdale",
+"3166"
+],
+[
+"Hughesdale",
+"3166"
+],
+[
+"Oakleigh South",
+"3167"
+],
+[
+"Clayton",
+"3168"
+],
+[
+"Clayton South",
+"3169"
+],
+[
+"Mulgrave",
+"3170"
+],
+[
+"Springvale",
+"3171"
+],
+[
+"Springvale South",
+"3172"
+],
+[
+"Dingley Village",
+"3172"
+],
+[
+"Keysborough",
+"3173"
+],
+[
+"Noble Park",
+"3174"
+],
+[
+"Noble Park North",
+"3174"
+],
+[
+"Dandenong",
+"3175"
+],
+[
+"Dandenong North",
+"3175"
+],
+[
+"Dandenong South",
+"3175"
+],
+[
+"Doveton",
+"3177"
+],
+[
+"Scoresby",
+"3179"
+],
+[
+"Endeavour Hills",
+"3802"
+],
+[
+"Hallam",
+"3803"
+],
+[
+"Narre Warren",
+"3805"
+],
+[
+"Berwick",
+"3806"
+]
+]
+}
+]
+}

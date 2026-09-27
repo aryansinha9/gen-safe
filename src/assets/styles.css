@@ -1,0 +1,38 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html { scroll-behavior: smooth; scroll-padding-top: 6rem; }
+  body { overscroll-behavior: none; }
+  :focus-visible { outline: 2px solid #e5242a; outline-offset: 2px; }
+  .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; line-height: 1; }
+}
+
+@layer components {
+  /* Victorian licence plates — L (amber), P1 (red), P2 (green) */
+  .plate { @apply inline-flex items-center justify-center w-6 h-6 font-headline-sm text-label-sm font-black rounded-sm shadow-inner; }
+  .plate-l { @apply bg-tertiary text-on-tertiary; }
+  .plate-p1 { @apply bg-primary-container text-on-primary-container; }
+  .plate-p2 { @apply bg-secondary-container text-on-primary; }
+
+  .btn-primary { @apply inline-flex items-center justify-center gap-space-xs rounded-full bg-primary-container hover:bg-primary-container/90 text-on-primary-container font-headline-sm uppercase tracking-wider shadow-lg transition-all hover:-translate-y-0.5 hover:shadow-[0_12px_32px_rgba(229,36,42,0.4)] active:translate-y-0; }
+  .btn-secondary { @apply inline-flex items-center justify-center gap-space-xs rounded-full bg-surface-container-high hover:bg-surface-bright text-on-surface transition-colors shadow-sm; }
+
+  .eyebrow { @apply font-label-sm text-label-sm uppercase tracking-widest font-bold; }
+  .section-title { @apply font-headline-lg text-headline-md lg:text-headline-lg text-on-surface tracking-tight uppercase; }
+  .card { @apply bg-surface-container rounded-2xl shadow-xl; }
+
+  .field { @apply w-full bg-surface-container-low text-on-surface px-space-md py-space-sm rounded-lg text-body-md placeholder:text-outline/50 border border-white/10 focus:outline-none focus:border-primary-container focus:ring-2 focus:ring-primary-container/30; }
+  .field-label { @apply font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider; }
+
+  .choice { @apply cursor-pointer rounded-xl bg-surface-container-low p-space-md border border-transparent transition-colors hover:bg-surface-container-high; }
+  .peer:checked + .choice { @apply border-primary-container bg-surface-container-high shadow-[0_12px_32px_rgba(229,36,42,0.22)]; }
+  .peer:focus-visible + .choice { @apply ring-2 ring-primary-container; }
+
+  .nav-link { @apply px-space-md py-space-xs font-title-md text-title-md text-on-surface-variant hover:text-on-surface transition-colors rounded-full whitespace-nowrap; }
+  .nav-link[aria-current='page'] { @apply bg-surface-container-high text-on-surface; }
+}
+
+/* Chamfered shield corners for premium cards (DESIGN.md → Shapes) */
+.chamfer { clip-path: polygon(18px 0, 100% 0, 100% calc(100% - 18px), calc(100% - 18px) 100%, 0 100%, 0 18px); }
