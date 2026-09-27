@@ -50,7 +50,7 @@ section[id], #book { scroll-margin-top: 90px; }
 }
 @media (max-width: 640px) {
   .sg-header-inner { padding: 10px 16px !important; gap: 12px !important; justify-content: space-between; }
-  .sg-header-inner img { height: 44px !important; }
+  .sg-header-inner img { height: 54px !important; }
   .sg-phone-text { display: none; }
   .sg-header-phone { width: 40px; height: 40px; justify-content: center; border-radius: 10px; box-shadow: 0 0 0 1px #3f424d; margin-left: auto; }
   .sg-hero { padding: 40px 16px 48px !important; gap: 48px !important; }
