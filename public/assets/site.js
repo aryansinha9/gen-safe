@@ -1,10 +1,12 @@
-// Safe Gen Driving — interactivity ported from the Claude Design component (Safe Gen Driving.dc.html).
+// Safe-Gen Driving — page interactivity (contact links, marquee, lessons, reviews, pass stories, suburb check).
 (() => {
   const $ = (s, r = document) => r.querySelector(s);
   const el = (tag, style, html) => { const e = document.createElement(tag); if (style) e.style.cssText = style; if (html != null) e.innerHTML = html; return e; };
   const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
-  const PHONE = '0470452803';
-  const state = { slot: 1, dur: 60, testi: 0 };
+  const WA = 'https://wa.me/61470452803';
+  const SMS = 'sms:+61470452803';
+  const MSG = "Hi Safe-Gen, I'd like to book a driving lesson.";
+  const state = { testi: 0 };
 
   /* ---------- Image slots ---------- */
   const PH_ICON = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="m21 17-5-5-9 8"/></svg>';
@@ -16,34 +18,15 @@
     const img = new Image();
     img.alt = slot.dataset.alt || '';
     img.decoding = 'async';
+    if (slot.dataset.pos) img.style.objectPosition = slot.dataset.pos;
     img.onload = () => { empty.remove(); slot.appendChild(img); };
     img.src = slot.dataset.src;
   };
   document.querySelectorAll('.sg-slot').forEach(fillSlot);
 
-  /* ---------- Quick book slots ---------- */
-  const SLOTS = [['Tue', '4:30 pm'], ['Wed', '7:00 am'], ['Thu', '5:30 pm'], ['Sat', '9:00 am']];
-  const slotBox = $('[data-slots]');
-  const reserve = $('[data-reserve]');
-  const renderSlots = () => {
-    slotBox.innerHTML = '';
-    SLOTS.forEach(([day, time], i) => {
-      const on = i === state.slot;
-      const b = el('button', `flex:1;min-width:92px;padding:10px 12px;border-radius:10px;border:1px solid ${on ? '#E3262B' : '#3f424d'};background:${on ? 'rgba(227,38,43,.14)' : 'rgba(22,24,38,.5)'};color:#e9e9ed;cursor:pointer;text-align:left;font-family:var(--font-body);transition:all .2s`,
-        `<div style="font:500 11px var(--font-body);color:#9397ab">${day}</div><div style="font:600 15px var(--font-body);margin-top:2px">${time}</div>`);
-      b.type = 'button';
-      b.className = 'sg-slot-btn';
-      b.setAttribute('role', 'radio');
-      b.setAttribute('aria-checked', String(on));
-      b.addEventListener('click', () => { state.slot = i; renderSlots(); });
-      slotBox.appendChild(b);
-    });
-    const label = SLOTS[state.slot].join(' ');
-    reserve.textContent = 'Reserve ' + label;
-    // Reserving opens an SMS to the instructor line, pre-filled with the chosen time.
-    reserve.href = `sms:${PHONE}?&body=${encodeURIComponent(`Hi Safe Gen, I'd like to book a driving lesson — ${label} if it's still free.`)}`;
-  };
-  renderSlots();
+  /* ---------- Contact links: pre-fill WhatsApp / SMS ---------- */
+  document.querySelectorAll('[data-wa]').forEach((a) => { a.href = `${WA}?text=${encodeURIComponent(MSG)}`; });
+  document.querySelectorAll('[data-sms]').forEach((a) => { a.href = `${SMS}?&body=${encodeURIComponent(MSG)}`; });
 
   /* ---------- Marquee wordmark ---------- */
   const marquee = $('[data-marquee]');
@@ -64,88 +47,41 @@
   };
   marquee.append(run(), run());
 
-  /* ---------- Packages + 60/90 min toggle ---------- */
-  const durBox = $('[data-durations]');
-  const pkgBox = $('[data-packages]');
+  /* ---------- Lessons ---------- */
   const CHECK = '<svg width="16" height="16" viewBox="0 0 256 256" fill="#3fcf74" style="flex:none;margin-top:2px" aria-hidden="true"><path d="M229.7 77.7l-128 128a8 8 0 0 1-11.4 0l-56-56a8 8 0 0 1 11.4-11.4L96 188.7 218.3 66.3a8 8 0 0 1 11.4 11.4Z"></path></svg>';
-  const renderPackages = () => {
-    const long = state.dur === 90;
-    const k = long ? 1.45 : 1;
-    const m = long ? '90' : '60';
-    const packages = [
-      { name: 'Single lesson', short: 'lesson', price: Math.round(75 * k), unit: '/ lesson', save: 'Pay as you go', items: [m + '‑min lesson', 'Door‑to‑door pickup', 'Progress notes'] },
-      { name: '5‑lesson pack', short: '5 pack', price: Math.round(355 * k), unit: '/ 5 lessons', save: 'Save $' + Math.round(20 * k), items: ['5 × ' + m + '‑min lessons', 'Structured L‑stage plan', 'Parent progress updates'] },
-      { name: '10‑lesson pack', short: '10 pack', price: Math.round(690 * k), unit: '/ 10 lessons', save: 'Save $' + Math.round(60 * k), featured: true, items: ['10 × ' + m + '‑min lessons', 'Mock test included', 'Priority booking'] },
-      { name: 'Test day package', short: 'test day', price: 240, unit: '/ package', save: 'Pre‑test warm‑up + car hire', items: ['60‑min warm‑up lesson', 'Use of Safe Gen car for test', 'Pickup & drop‑off'] },
-    ];
-    pkgBox.innerHTML = '';
-    packages.forEach((p) => {
-      const f = !!p.featured;
-      const card = el('div', `position:relative;padding:28px;border-radius:18px;background:${f ? 'linear-gradient(170deg,#2c1d25,#1d1e2c 60%)' : '#1b1d2b'};box-shadow:${f ? '0 0 0 1px #E3262B,0 30px 70px rgba(227,38,43,.16)' : '0 0 0 1px #292b31'};display:flex;flex-direction:column;gap:20px;transition:transform .3s`,
-        `<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;min-height:24px">
-           <span style="font:600 13px var(--font-body);color:#b2b6ca">${p.name}</span>
-           ${f ? '<span style="padding:4px 10px;border-radius:999px;background:#E3262B;color:#f3f5fe;font:600 11px var(--font-body);letter-spacing:.04em">Most popular</span>' : ''}
-         </div>
-         <div style="display:flex;align-items:baseline;gap:6px">
-           <span style="font:italic 800 54px/1 'Saira',sans-serif;letter-spacing:-.01em;color:#f3f5fe">$${p.price}</span>
-           <span style="font:500 13px var(--font-body);color:#9397ab">${p.unit}</span>
-         </div>
-         <div style="font:500 13px var(--font-body);color:${f ? '#ff8a8d' : '#7fe0a3'}">${p.save}</div>
-         <div style="height:1px;background:linear-gradient(90deg,#3f424d00,#3f424d 20%,#3f424d 80%,#3f424d00)"></div>
-         <div style="display:flex;flex-direction:column;gap:10px;flex:1">
-           ${p.items.map((it) => `<div style="display:flex;gap:10px;align-items:start;font:400 14px/1.45 var(--font-body);color:#cfd3e5">${CHECK}${esc(it)}</div>`).join('')}
-         </div>
-         <a href="#book" class="btn btn-block ${f ? 'btn-primary' : 'btn-secondary'}" style="padding:12px;font-size:14px;${f ? 'border-color:#E3262B;background:#E3262B;color:#f3f5fe' : ''}">Book ${p.short}</a>`);
-      card.className = 'sg-package';
-      pkgBox.appendChild(card);
-    });
-    durBox.innerHTML = '';
-    [60, 90].forEach((d) => {
-      const on = state.dur === d;
-      const b = el('button', `padding:10px 18px;border:0;border-radius:9px;background:${on ? '#3f424d' : 'transparent'};color:${on ? '#f3f5fe' : '#9397ab'};font:600 13px var(--font-body);cursor:pointer;transition:all .2s`, d + ' min');
-      b.type = 'button';
-      b.setAttribute('aria-pressed', String(on));
-      b.addEventListener('click', () => { state.dur = d; renderPackages(); });
-      durBox.appendChild(b);
-    });
-  };
-  renderPackages();
-
-  /* ---------- Instructors ---------- */
-  const TEAM = [
-    { name: 'Instructor name', years: '12 yrs', bio: 'Specialises in anxious first‑timers. Known for the calmest voice in Melbourne.', tags: ['Auto', 'English', 'Hindi'], plate: '#F4C21B', plateInk: '#161826', letter: 'L' },
-    { name: 'Instructor name', years: '8 yrs', bio: 'Test‑route expert with a knack for reverse parks and tricky roundabouts.', tags: ['Auto', 'Test prep'], plate: '#1F7A3F', plateInk: '#f3f5fe', letter: 'P' },
-    { name: 'Instructor name', years: '6 yrs', bio: 'Freeway and night‑driving coach for new P‑platers building real‑world skill.', tags: ['Auto', 'Freeways'], plate: '#E3262B', plateInk: '#f3f5fe', letter: 'P' },
+  const LESSONS = [
+    { name: 'Learner driver lessons', plate: '#F4C21B', ink: '#161826', letter: 'L', blurb: 'Brand new or still on your L’s? Start with the basics and build up at a pace that suits you.', items: ['Patient, one‑on‑one instruction', 'Clear, step‑by‑step explanations', 'Paced to your confidence level'], ask: 'learner driver lessons' },
+    { name: 'Test preparation', plate: '#E3262B', ink: '#f3f5fe', letter: 'P1', featured: true, blurb: 'Getting ready for your drive test? Focused practice on the skills you’ll be assessed on.', items: ['Practise test manoeuvres', 'Honest feedback on your readiness', 'Calm and confident on the day'], ask: 'test preparation lessons' },
+    { name: 'Confidence & refresher', plate: '#1F7A3F', ink: '#f3f5fe', letter: 'P', blurb: 'Licensed but out of practice, or new to driving in Australia? Rebuild your confidence on local roads.', items: ['Overseas & returning drivers', 'Local road rules and conditions', 'Go at your own pace'], ask: 'a confidence / refresher lesson' },
   ];
-  const teamBox = $('[data-team]');
-  TEAM.forEach((t, i) => {
-    const card = el('div', 'border-radius:18px;overflow:hidden;background:#1b1d2b;box-shadow:0 0 0 1px #292b31;transition:box-shadow .3s',
-      `<div style="position:relative;height:340px">
-         <div class="sg-slot" data-src="/assets/img/instructor-${i + 1}.jpg" data-alt="${esc(t.name)}" data-placeholder="Portrait — ${esc(t.name)}"></div>
-         <div style="position:absolute;left:16px;top:16px;width:34px;height:34px;border-radius:9px;background:${t.plate};color:${t.plateInk};font:italic 900 20px/34px 'Saira',sans-serif;text-align:center;pointer-events:none">${t.letter}</div>
+  const lessonBox = $('[data-lessons]');
+  LESSONS.forEach((l) => {
+    const f = !!l.featured;
+    const card = el('div', `position:relative;padding:28px;border-radius:18px;background:${f ? 'linear-gradient(170deg,#2c1d25,#1d1e2c 60%)' : '#1b1d2b'};box-shadow:${f ? '0 0 0 1px #E3262B,0 30px 70px rgba(227,38,43,.16)' : '0 0 0 1px #292b31'};display:flex;flex-direction:column;gap:18px;transition:transform .3s`,
+      `<div style="width:48px;height:48px;border-radius:12px;background:${l.plate};color:${l.ink};font:italic 900 ${l.letter.length > 1 ? 24 : 30}px/48px 'Saira',sans-serif;text-align:center">${l.letter}</div>
+       <h3 style="margin:0;font:italic 800 24px/1.15 'Saira',sans-serif;letter-spacing:-.02em;color:#f3f5fe">${esc(l.name)}</h3>
+       <p style="margin:0;font:400 15px/1.6 var(--font-body);color:#b2b6ca">${esc(l.blurb)}</p>
+       <div style="height:1px;background:linear-gradient(90deg,#3f424d00,#3f424d 20%,#3f424d 80%,#3f424d00)"></div>
+       <div style="display:flex;flex-direction:column;gap:10px;flex:1">
+         ${l.items.map((it) => `<div style="display:flex;gap:10px;align-items:start;font:400 14px/1.45 var(--font-body);color:#cfd3e5">${CHECK}${esc(it)}</div>`).join('')}
        </div>
-       <div style="padding:22px 24px 24px;display:flex;flex-direction:column;gap:8px">
-         <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px"><h4 style="margin:0;font:italic 800 21px 'Saira',sans-serif;color:#f3f5fe">${esc(t.name)}</h4><span style="font:500 13px var(--font-body);color:#9397ab">${t.years}</span></div>
-         <p style="margin:0;font:400 14px/1.55 var(--font-body);color:#9397ab">${esc(t.bio)}</p>
-         <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px">${t.tags.map((g) => `<span class="tag tag-neutral">${esc(g)}</span>`).join('')}</div>
-       </div>`);
-    card.className = 'sg-member';
-    teamBox.appendChild(card);
-    fillSlot($('.sg-slot', card));
+       <a href="${WA}?text=${encodeURIComponent(`Hi Safe-Gen, I'm interested in ${l.ask}.`)}" target="_blank" rel="noopener" class="btn btn-block ${f ? 'btn-primary' : 'btn-secondary'}" style="padding:12px;font-size:14px;${f ? 'border-color:#E3262B;background:#E3262B;color:#f3f5fe' : ''}">Ask about this lesson</a>`);
+    card.className = 'sg-package';
+    lessonBox.appendChild(card);
   });
 
   /* ---------- Reviews carousel ---------- */
   const REVIEWS = [
-    { quote: 'I was scared of roundabouts after my first lesson with Dad. Four weeks with Safe Gen and I passed first go.', name: 'Aanya S.', initials: 'AS', meta: 'Passed at Dandenong · P1' },
-    { quote: 'As a parent, the notes after every lesson were gold. I always knew exactly what she was working on.', name: 'Michelle T.', initials: 'MT', meta: 'Parent of a learner' },
-    { quote: 'Patient, punctual and honest. They told me when I wasn’t ready — and made sure I was when I booked.', name: 'Josh K.', initials: 'JK', meta: 'Passed at Heatherton · P1' },
-    { quote: 'Pickup from school, lessons in the evening, test day handled. Couldn’t have been easier.', name: 'Liam R.', initials: 'LR', meta: 'Passed at Narre Warren · P1' },
+    { quote: 'Zubair was very helpful on my driving lesson! I haven’t driven in a while nor in Australia so just wanted to build my confidence and Zubair definitely helped with this. Thank you!', name: 'Chloe', meta: 'Posted 26 Sep 2026' },
+    { quote: 'Very easy to work with and very understanding of skill and confidence level.', name: 'Elisabetta', meta: 'Posted 19 Sep 2026' },
+    { quote: 'Had my first lesson with Zubair today and I can’t recommend him enough. His instructions were clear, his advice was easy to understand and I already feel much more confident on the road. I highly recommend Zubair for learner drivers of any skill range that are looking for a patient and supportive instructor.', name: 'Alex', meta: 'Posted 12 Sep 2026' },
   ];
+  const N = REVIEWS.length;
   const dots = $('[data-review-dots]');
   const renderReview = () => {
     const r = REVIEWS[state.testi];
     $('[data-review-quote]').textContent = r.quote;
-    $('[data-review-initials]').textContent = r.initials;
+    $('[data-review-initials]').textContent = r.name[0];
     $('[data-review-name]').textContent = r.name;
     $('[data-review-meta]').textContent = r.meta;
     dots.innerHTML = '';
@@ -158,20 +94,36 @@
       dots.appendChild(d);
     });
   };
-  $('[data-review-prev]').addEventListener('click', () => { state.testi = (state.testi + 3) % 4; renderReview(); });
-  $('[data-review-next]').addEventListener('click', () => { state.testi = (state.testi + 1) % 4; renderReview(); });
-  setInterval(() => { state.testi = (state.testi + 1) % 4; renderReview(); }, 7000);
+  $('[data-review-prev]').addEventListener('click', () => { state.testi = (state.testi + N - 1) % N; renderReview(); });
+  $('[data-review-next]').addEventListener('click', () => { state.testi = (state.testi + 1) % N; renderReview(); });
+  setInterval(() => { state.testi = (state.testi + 1) % N; renderReview(); }, 9000);
   renderReview();
 
+  /* ---------- Pass stories (from the Safe-Gen Facebook page) ---------- */
+  const STORIES = [
+    { name: 'Vijay', date: '30 July', text: 'A fantastic achievement and a reflection of your hard work, dedication and commitment throughout your lessons. It’s been a pleasure watching your skills and confidence grow behind the wheel.' },
+    { name: 'Priya', date: '29 May', text: 'Big congratulations to Priya for passing her driving test! She really appreciated the patient teaching style and the confidence she built on the road. So proud of her hard work and success.' },
+    { name: 'Danush', date: '2 April', text: 'At the beginning he was nervous and often scared behind the wheel, but he stayed committed and didn’t give up. Lesson by lesson he listened, improved and started making quicker, better decisions. A well‑deserved pass — he should be proud of how far he’s come.' },
+  ];
+  const storyBox = $('[data-stories]');
+  STORIES.forEach((t) => {
+    storyBox.appendChild(el('article', 'padding:26px;border-radius:18px;background:#1b1d2b;box-shadow:0 0 0 1px #292b31;display:flex;flex-direction:column;gap:12px',
+      `<div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
+         <span style="display:flex;align-items:center;gap:10px"><span style="padding:3px 9px;border-radius:7px;background:#1F7A3F;color:#f3f5fe;font:italic 900 14px/1.3 'Saira',sans-serif">P</span><span style="font:italic 800 20px 'Saira',sans-serif;color:#f3f5fe">Congrats, ${esc(t.name)}!</span></span>
+         <span style="font:500 12px var(--font-body);color:#75798c;white-space:nowrap">${esc(t.date)}</span>
+       </div>
+       <p style="margin:0;font:400 14px/1.6 var(--font-body);color:#b2b6ca">${esc(t.text)}</p>`));
+  });
+
   /* ---------- Areas + suburb check ---------- */
-  const AREAS = ['Dandenong', 'Springvale', 'Noble Park', 'Keysborough', 'Clayton', 'Glen Waverley', 'Mulgrave', 'Rowville', 'Narre Warren', 'Berwick', 'Cranbourne', 'Hallam'];
+  const AREAS = ['Sunshine', 'Werribee', 'Melton', 'Coolaroo', 'Melbourne', 'Derrimut', 'Deer Park'];
   const input = $('[data-suburb]');
   const msg = $('[data-suburb-msg]');
   const areaBox = $('[data-areas]');
   const renderAreas = () => {
     const q = input.value.trim().toLowerCase();
     const hit = AREAS.find((a) => a.toLowerCase() === q) || (q.length > 2 && AREAS.find((a) => a.toLowerCase().startsWith(q)));
-    msg.textContent = !q ? '' : hit ? '✓ Yes — we cover ' + hit + '. Pickup available.' : 'Not on our list yet — call 0470 452 803 and we’ll try.';
+    msg.textContent = !q ? '' : hit ? '✓ Yes — we teach in ' + hit + '.' : 'Not on our list — call or WhatsApp 0470 452 803 and we’ll let you know.';
     msg.style.color = hit ? '#7fe0a3' : '#b2b6ca';
     areaBox.innerHTML = '';
     AREAS.forEach((n) => {

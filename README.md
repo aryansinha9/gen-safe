@@ -17,19 +17,16 @@ Preview locally: `python3 -m http.server 5175 --directory public` → http://loc
 
 Deploys on Vercel as a static site (`vercel.json` → output directory `public`).
 
-## Photos
+## Content
 
-The design leaves the photo spaces empty. Add these files and they appear automatically (until then the design's placeholder shows):
+All copy is real Safe-Gen information (About Zubair, reviews, Facebook pass posts, contact details, service areas).
+Editable lists live in `assets/site.js`: `LESSONS`, `REVIEWS`, `STORIES` (pass posts) and `AREAS`.
+
+## Photos
 
 | File | Where |
 | --- | --- |
-| `public/assets/img/hero.jpg` | Hero — Safe Gen i30 on a Melbourne road at dusk |
-| `public/assets/img/why.jpg` | Why Safe Gen — instructor coaching from the passenger seat |
-| `public/assets/img/instructor-1.jpg` … `instructor-3.jpg` | Instructor portraits |
+| `public/assets/img/pass-1.jpg` | Hero + Recent passes (Priya) |
+| `public/assets/img/pass-2.jpg`, `pass-3.jpg` | Recent passes gallery |
 
-## Before launch
-
-- Instructor names are "Instructor name" placeholders (edit `TEAM` in `assets/site.js`).
-- Prices are marked "Concept pricing" in the design (edit `packages` in `renderPackages`).
-- Reviews and the 4.9★ rating are design copy — replace with genuine reviews.
-- Quick-book "Reserve" opens an SMS to 0470 452 803 pre-filled with the chosen time.
+No prices are published — the site asks visitors to call/text/WhatsApp for prices and availability.
