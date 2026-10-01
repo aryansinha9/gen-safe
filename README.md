@@ -27,6 +27,7 @@ Editable lists live in `assets/site.js`: `LESSONS`, `REVIEWS`, `STORIES` (pass p
 | File | Where |
 | --- | --- |
 | `public/assets/img/pass-1.jpg` | Hero + Recent passes (Priya) |
-| `public/assets/img/pass-2.jpg`, `pass-3.jpg` | Recent passes gallery |
+| `public/assets/img/pass-2.jpg` | Recent passes (Vijay) |
+| `public/assets/img/pass-3.jpg` | Recent passes (Danush) |
 
 No prices are published — the site asks visitors to call/text/WhatsApp for prices and availability.

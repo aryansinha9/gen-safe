@@ -101,18 +101,24 @@
 
   /* ---------- Pass stories (from the Safe-Gen Facebook page) ---------- */
   const STORIES = [
-    { name: 'Vijay', date: '30 July', text: 'A fantastic achievement and a reflection of your hard work, dedication and commitment throughout your lessons. It’s been a pleasure watching your skills and confidence grow behind the wheel.' },
-    { name: 'Priya', date: '29 May', text: 'Big congratulations to Priya for passing her driving test! She really appreciated the patient teaching style and the confidence she built on the road. So proud of her hard work and success.' },
-    { name: 'Danush', date: '2 April', text: 'At the beginning he was nervous and often scared behind the wheel, but he stayed committed and didn’t give up. Lesson by lesson he listened, improved and started making quicker, better decisions. A well‑deserved pass, and he should be proud of how far he’s come.' },
+    { name: 'Vijay', date: '30 July', photo: 'pass-2.jpg', pos: 'center 35%', alt: 'Vijay giving two thumbs up beside the Safe-Gen car after passing his test', text: 'A fantastic achievement and a reflection of your hard work, dedication and commitment throughout your lessons. It’s been a pleasure watching your skills and confidence grow behind the wheel.' },
+    { name: 'Priya', date: '29 May', photo: 'pass-1.jpg', pos: 'center 30%', alt: 'Priya holding her driver licence receipt in front of the Safe-Gen car', text: 'Big congratulations to Priya for passing her driving test! She really appreciated the patient teaching style and the confidence she built on the road. So proud of her hard work and success.' },
+    { name: 'Danush', date: '2 April', photo: 'pass-3.jpg', pos: 'center 35%', alt: 'Danush holding his licence receipt and P plates next to the Safe-Gen car', text: 'At the beginning he was nervous and often scared behind the wheel, but he stayed committed and didn’t give up. Lesson by lesson he listened, improved and started making quicker, better decisions. A well‑deserved pass, and he should be proud of how far he’s come.' },
   ];
   const storyBox = $('[data-stories]');
   STORIES.forEach((t) => {
-    storyBox.appendChild(el('article', 'padding:26px;border-radius:18px;background:#1b1d2b;box-shadow:0 0 0 1px #292b31;display:flex;flex-direction:column;gap:12px',
-      `<div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
-         <span style="display:flex;align-items:center;gap:10px"><span style="padding:3px 9px;border-radius:7px;background:#1F7A3F;color:#f3f5fe;font:italic 900 14px/1.3 'Saira',sans-serif">P</span><span style="font:italic 800 20px 'Saira',sans-serif;color:#f3f5fe">Congrats, ${esc(t.name)}!</span></span>
-         <span style="font:500 12px var(--font-body);color:#75798c;white-space:nowrap">${esc(t.date)}</span>
-       </div>
-       <p style="margin:0;font:400 14px/1.6 var(--font-body);color:#b2b6ca">${esc(t.text)}</p>`));
+    const card = el('article', 'border-radius:18px;overflow:hidden;background:#1b1d2b;box-shadow:0 0 0 1px #292b31;display:flex;flex-direction:column',
+      `<figure class="sg-photo" style="border-radius:0;box-shadow:none"><div class="sg-slot" data-src="/assets/img/${t.photo}" data-pos="${t.pos}" data-alt="${esc(t.alt)}" data-placeholder="${esc(t.name)}"></div></figure>
+       <div style="padding:24px 26px 26px;display:flex;flex-direction:column;gap:12px">
+         <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
+           <span style="display:flex;align-items:center;gap:10px"><span style="padding:3px 9px;border-radius:7px;background:#1F7A3F;color:#f3f5fe;font:italic 900 14px/1.3 'Saira',sans-serif">P</span><span style="font:italic 800 20px 'Saira',sans-serif;color:#f3f5fe">Congrats, ${esc(t.name)}!</span></span>
+           <span style="font:500 12px var(--font-body);color:#75798c;white-space:nowrap">${esc(t.date)}</span>
+         </div>
+         <p style="margin:0;font:400 14px/1.6 var(--font-body);color:#b2b6ca">${esc(t.text)}</p>
+       </div>`);
+    card.className = 'sg-pass';
+    storyBox.appendChild(card);
+    fillSlot($('.sg-slot', card));
   });
 
   /* ---------- Areas + suburb check ---------- */
