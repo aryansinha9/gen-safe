@@ -1,4 +1,4 @@
-// Safe-Gen Driving — page interactivity (contact links, marquee, lessons, reviews, pass stories, suburb check).
+// Safe-Gen Driving: page interactivity (contact links, marquee, lessons, reviews, pass stories, suburb check).
 (() => {
   const $ = (s, r = document) => r.querySelector(s);
   const el = (tag, style, html) => { const e = document.createElement(tag); if (style) e.style.cssText = style; if (html != null) e.innerHTML = html; return e; };
@@ -103,7 +103,7 @@
   const STORIES = [
     { name: 'Vijay', date: '30 July', text: 'A fantastic achievement and a reflection of your hard work, dedication and commitment throughout your lessons. It’s been a pleasure watching your skills and confidence grow behind the wheel.' },
     { name: 'Priya', date: '29 May', text: 'Big congratulations to Priya for passing her driving test! She really appreciated the patient teaching style and the confidence she built on the road. So proud of her hard work and success.' },
-    { name: 'Danush', date: '2 April', text: 'At the beginning he was nervous and often scared behind the wheel, but he stayed committed and didn’t give up. Lesson by lesson he listened, improved and started making quicker, better decisions. A well‑deserved pass — he should be proud of how far he’s come.' },
+    { name: 'Danush', date: '2 April', text: 'At the beginning he was nervous and often scared behind the wheel, but he stayed committed and didn’t give up. Lesson by lesson he listened, improved and started making quicker, better decisions. A well‑deserved pass, and he should be proud of how far he’s come.' },
   ];
   const storyBox = $('[data-stories]');
   STORIES.forEach((t) => {
@@ -123,7 +123,7 @@
   const renderAreas = () => {
     const q = input.value.trim().toLowerCase();
     const hit = AREAS.find((a) => a.toLowerCase() === q) || (q.length > 2 && AREAS.find((a) => a.toLowerCase().startsWith(q)));
-    msg.textContent = !q ? '' : hit ? '✓ Yes — we teach in ' + hit + '.' : 'Not on our list — call or WhatsApp 0470 452 803 and we’ll let you know.';
+    msg.textContent = !q ? '' : hit ? '✓ Yes, we teach in ' + hit + '.' : 'Not on our list yet. Call or WhatsApp 0470 452 803 and we’ll let you know.';
     msg.style.color = hit ? '#7fe0a3' : '#b2b6ca';
     areaBox.innerHTML = '';
     AREAS.forEach((n) => {
