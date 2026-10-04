@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob: https://*.supabase.co http://127.0.0.1:54321; connect-src 'self' https://*.supabase.co wss://*.supabase.co http://127.0.0.1:54321; base-uri 'none'; form-action 'self'">
+<title>Safe-Gen Admin</title>
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="stylesheet" href="/assets/nocturne.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Saira:ital,wght@1,600;1,700;1,800;1,900&family=Inter:ital,wght@0,400;0,500;0,600;0,800;1,800;1,900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/site.css">
+<link rel="stylesheet" href="/admin/admin.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.min.js" integrity="sha384-WgXwGL6fUsYJWNaKJgVbrJKGRQwc1vieh2oy4kw9nXqpNDz3tdSsqEYUgeHD/NuF" crossorigin="anonymous" defer></script>
+<script src="/assets/config.js" defer></script>
+<script src="/assets/templates.js" defer></script>
+<script src="/admin/admin.js" defer></script>
+</head>
+<body class="adm">
+
+<!-- LOGIN -->
+<main id="login" class="adm-login" hidden>
+  <form class="adm-login-card" data-login novalidate>
+    <div class="adm-plates" aria-hidden="true"><span></span><span></span><span></span></div>
+    <img src="/assets/logo.png" alt="Safe-Gen Driving School" class="adm-login-logo">
+    <div>
+      <h1 class="adm-h1">Admin sign in</h1>
+      <p class="adm-muted">Manage prices, reviews, recent passes and service areas.</p>
+    </div>
+    <label class="adm-field"><span>Email</span><input class="input" type="email" name="email" autocomplete="username" required></label>
+    <label class="adm-field"><span>Password</span><input class="input" type="password" name="password" autocomplete="current-password" required></label>
+    <p class="adm-error" data-login-error role="alert" hidden></p>
+    <button class="btn btn-primary btn-block adm-primary" type="submit">Sign in</button>
+    <a href="/" class="adm-muted adm-back">← Back to website</a>
+  </form>
+</main>
+
+<!-- SETUP NEEDED -->
+<main id="setup" class="adm-login" hidden>
+  <div class="adm-login-card">
+    <img src="/assets/logo.png" alt="Safe-Gen Driving School" class="adm-login-logo">
+    <h1 class="adm-h1">Connect Supabase</h1>
+    <p class="adm-muted">Add the Supabase project URL and anon key to <code>public/assets/config.js</code> to enable the dashboard. See <code>ADMIN.md</code>.</p>
+  </div>
+</main>
+
+<!-- DASHBOARD -->
+<div id="app" hidden>
+  <header class="adm-top">
+    <div class="adm-top-inner">
+      <a href="/admin/" class="adm-brand"><img src="/assets/logo.png" alt="Safe-Gen"><span>Admin</span></a>
+      <nav class="adm-tabs" role="tablist" data-tabs></nav>
+      <div class="adm-top-right">
+        <a href="/" target="_blank" rel="noopener" class="btn btn-ghost adm-sm">View site ↗</a>
+        <span class="adm-user" data-user></span>
+        <button type="button" class="btn btn-secondary adm-sm" data-signout>Sign out</button>
+      </div>
+    </div>
+  </header>
+  <main class="adm-main">
+    <div class="adm-head">
+      <div>
+        <span class="adm-kicker" data-kicker></span>
+        <h1 class="adm-h1" data-title></h1>
+        <p class="adm-muted" data-desc></p>
+      </div>
+      <button type="button" class="btn btn-primary adm-primary" data-add>+ Add</button>
+    </div>
+    <div data-list></div>
+  </main>
+</div>
+
+<!-- EDITOR -->
+<dialog class="adm-dialog" data-dialog>
+  <form method="dialog" class="adm-editor" data-form novalidate>
+    <div class="adm-editor-head">
+      <h2 class="adm-h2" data-form-title></h2>
+      <button type="button" class="btn btn-ghost btn-icon" data-close aria-label="Close">✕</button>
+    </div>
+    <div class="adm-editor-body">
+      <div class="adm-fields" data-fields></div>
+      <div class="adm-preview">
+        <span class="adm-kicker">Live preview · exactly as on the site</span>
+        <div class="adm-preview-stage" data-preview></div>
+      </div>
+    </div>
+    <div class="adm-editor-foot">
+      <button type="button" class="btn btn-ghost adm-danger" data-delete>Delete</button>
+      <span class="adm-spacer"></span>
+      <button type="button" class="btn btn-secondary" data-cancel>Cancel</button>
+      <button type="submit" class="btn btn-primary adm-primary" data-save>Save</button>
+    </div>
+  </form>
+</dialog>
+
+<div class="adm-toasts" data-toasts aria-live="polite"></div>
+</body>
+</html>

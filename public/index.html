@@ -19,6 +19,8 @@
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"DrivingSchool","name":"Safe-Gen Driving School","description":"Safe-Gen Car Driving School helps learners become safe, confident drivers with patient, personalised lessons.","telephone":"+61470452803","email":"safegendrivingschool@gmail.com","address":{"@type":"PostalAddress","streetAddress":"Mount Derrimut Rd","addressLocality":"Melbourne","addressRegion":"VIC","postalCode":"3023","addressCountry":"AU"},"areaServed":["Sunshine VIC","Werribee VIC","Melbourne VIC","Coolaroo VIC","Melton VIC"],"knowsLanguage":["English","Hindi","Urdu","Telugu"],"logo":"/assets/logo.png"}
 </script>
+<script src="/assets/config.js" defer></script>
+<script src="/assets/templates.js" defer></script>
 <script src="/assets/site.js" defer></script>
 </head>
 <body>
@@ -32,6 +34,7 @@
     <nav class="sg-nav" style="display:flex;column-gap:26px;row-gap:40px;margin-left:24px;flex:1;min-width:0;flex-wrap:wrap;height:20px;line-height:20px;overflow:hidden;white-space:nowrap">
       <a href="#about" style="font:500 14px var(--font-body);color:#b2b6ca">About</a>
       <a href="#lessons" style="font:500 14px var(--font-body);color:#b2b6ca">Lessons</a>
+      <a href="#prices" style="font:500 14px var(--font-body);color:#b2b6ca">Prices</a>
       <a href="#reviews" style="font:500 14px var(--font-body);color:#b2b6ca">Reviews</a>
       <a href="#passes" style="font:500 14px var(--font-body);color:#b2b6ca">Passes</a>
       <a href="#areas" style="font:500 14px var(--font-body);color:#b2b6ca">Areas</a>
@@ -202,7 +205,22 @@
     <p style="margin:0;max-width:380px;font:400 15px/1.6 var(--font-body);color:#9397ab">Not sure which fits? Send a message about where you’re at and we’ll suggest a plan.</p>
   </div>
   <div data-lessons style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:16px;align-items:stretch"></div>
-  <p style="margin:24px 0 0;font:400 13px var(--font-body);color:#75798c">Call, text or WhatsApp 0470 452 803 for current prices and availability.</p>
+  <p style="margin:24px 0 0;font:400 13px var(--font-body);color:#75798c">See <a href="#prices" style="color:#b2b6ca;text-decoration:underline;text-underline-offset:3px">prices and packages</a> below, or call, text or WhatsApp 0470 452 803 to check availability.</p>
+</section>
+
+<!-- PRICES (content from Supabase, edited at /admin) -->
+<section id="prices" data-screen-label="Prices" style="position:relative;background:linear-gradient(180deg,#12141f,#161826);border-top:1px solid #292b31">
+  <div class="sg-section" style="max-width:1280px;margin:0 auto;padding:110px 32px">
+    <div style="display:flex;justify-content:space-between;align-items:end;gap:32px;flex-wrap:wrap;margin-bottom:48px">
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <span style="font:600 12px var(--font-body);letter-spacing:.16em;text-transform:uppercase;color:#ff8a8d">Prices &amp; packages</span>
+        <h2 style="margin:0;font:italic 800 clamp(34px,4vw,52px)/1.05 'Saira',sans-serif;letter-spacing:-.01em;color:#f3f5fe">Pick your pace.</h2>
+      </div>
+      <div data-durations role="group" aria-label="Lesson length" style="display:flex;padding:4px;border-radius:12px;background:#232532;box-shadow:0 0 0 1px #3f424d"></div>
+    </div>
+    <div data-prices style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,270px),1fr));gap:16px;align-items:stretch"></div>
+    <p style="margin:24px 0 0;font:400 13px var(--font-body);color:#75798c">All prices in AUD. Call, text or WhatsApp 0470 452 803 to book or ask about a package.</p>
+  </div>
 </section>
 
 <!-- REVIEWS -->
@@ -290,7 +308,7 @@
       <img src="/assets/logo.png" alt="Safe-Gen Driving School" loading="lazy" style="width:150px;height:auto;display:block">
       <p style="margin:0;font:400 14px/1.6 var(--font-body);color:#75798c;max-width:340px">Safe-Gen Car Driving School helps learners become safe, confident drivers with patient instruction and personalised lessons.</p>
     </div>
-    <div style="display:flex;flex-direction:column;gap:10px;font:400 14px var(--font-body)"><span style="font:600 12px var(--font-body);letter-spacing:.12em;text-transform:uppercase;color:#9397ab;margin-bottom:4px">Explore</span><a href="#about" style="color:#b2b6ca">About Zubair</a><a href="#lessons" style="color:#b2b6ca">Lessons</a><a href="#reviews" style="color:#b2b6ca">Reviews</a><a href="#passes" style="color:#b2b6ca">Recent passes</a><a href="#areas" style="color:#b2b6ca">Areas</a></div>
+    <div style="display:flex;flex-direction:column;gap:10px;font:400 14px var(--font-body)"><span style="font:600 12px var(--font-body);letter-spacing:.12em;text-transform:uppercase;color:#9397ab;margin-bottom:4px">Explore</span><a href="#about" style="color:#b2b6ca">About Zubair</a><a href="#lessons" style="color:#b2b6ca">Lessons</a><a href="#prices" style="color:#b2b6ca">Prices</a><a href="#reviews" style="color:#b2b6ca">Reviews</a><a href="#passes" style="color:#b2b6ca">Recent passes</a><a href="#areas" style="color:#b2b6ca">Areas</a></div>
     <div style="display:flex;flex-direction:column;gap:10px;font:400 14px var(--font-body)"><span style="font:600 12px var(--font-body);letter-spacing:.12em;text-transform:uppercase;color:#9397ab;margin-bottom:4px">Contact</span><a href="tel:+61470452803" style="color:#b2b6ca">0470 452 803</a><a href="https://wa.me/61470452803" target="_blank" rel="noopener" style="color:#b2b6ca">WhatsApp</a><a href="mailto:safegendrivingschool@gmail.com" style="color:#b2b6ca;overflow-wrap:anywhere">safegendrivingschool@gmail.com</a><span style="color:#b2b6ca">Mount Derrimut Rd, VIC 3023</span></div>
   </div>
   <div class="sg-section" style="max-width:1280px;margin:0 auto;padding:20px 32px 32px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font:400 12px var(--font-body);color:#75798c;border-top:1px solid #1f2130"><span>© <span data-year>2026</span> Safe‑Gen Driving School</span><span>Car driving lessons · Melbourne, VIC</span></div>

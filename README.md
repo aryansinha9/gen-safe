@@ -8,7 +8,10 @@ public/
   index.html            page markup (inline styles copied from the design)
   assets/nocturne.css   "Nocturne" design-system stylesheet from the export
   assets/site.css       page rules, hover states, animations, phone-width fixes
-  assets/site.js        quick-book slots, marquee, packages 60/90 toggle, instructors, reviews carousel, suburb check
+  assets/site.js        contact links, marquee, lessons, prices 60/90 toggle, reviews carousel, passes, suburb check
+  assets/templates.js   card templates shared by the site and the admin preview
+  assets/config.js      Supabase URL + anon key (editable content and /admin login)
+  admin/                admin dashboard (see ADMIN.md)
   assets/logo.png       Safe-Gen logo
   assets/img/           drop photos here (see below)
 ```
@@ -20,7 +23,8 @@ Deploys on Vercel as a static site (`vercel.json` → output directory `public`)
 ## Content
 
 All copy is real Safe-Gen information (About Zubair, reviews, Facebook pass posts, contact details, service areas).
-Editable lists live in `assets/site.js`: `LESSONS`, `REVIEWS`, `STORIES` (pass posts) and `AREAS`.
+Prices, reviews, recent passes and service areas are edited at `/admin` (stored in Supabase, see [ADMIN.md](ADMIN.md)).
+`DEFAULTS` in `assets/site.js` is the built-in copy shown if Supabase isn't configured or can't be reached.
 
 ## Photos
 
@@ -30,4 +34,4 @@ Editable lists live in `assets/site.js`: `LESSONS`, `REVIEWS`, `STORIES` (pass p
 | `public/assets/img/pass-2.jpg` | Recent passes (Vijay) |
 | `public/assets/img/pass-3.jpg` | Recent passes (Danush) |
 
-No prices are published — the site asks visitors to call/text/WhatsApp for prices and availability.
+Photos uploaded through `/admin` are stored in Supabase Storage.

@@ -1,27 +1,11 @@
-// Safe-Gen Driving: page interactivity (contact links, marquee, lessons, reviews, pass stories, suburb check).
+// Safe-Gen Driving: page interactivity. Prices, reviews, passes and areas load from Supabase (edited at /admin).
 (() => {
-  const $ = (s, r = document) => r.querySelector(s);
-  const el = (tag, style, html) => { const e = document.createElement(tag); if (style) e.style.cssText = style; if (html != null) e.innerHTML = html; return e; };
-  const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
-  const WA = 'https://wa.me/61470452803';
+  const { el, esc, WA, CHECK, reviewDate, initial, fillSlot, priceCard, passCard, areaPill } = window.SafeGen;
+  const $ = (q, r = document) => r.querySelector(q);
   const SMS = 'sms:+61470452803';
   const MSG = "Hi Safe-Gen, I'd like to book a driving lesson.";
-  const state = { testi: 0 };
+  const state = { testi: 0, dur: 60 };
 
-  /* ---------- Image slots ---------- */
-  const PH_ICON = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="m21 17-5-5-9 8"/></svg>';
-  const fillSlot = (slot) => {
-    const empty = el('div', null, `${PH_ICON}<span>${esc(slot.dataset.placeholder || '')}</span>`);
-    empty.className = 'sg-slot-empty';
-    slot.appendChild(empty);
-    if (!slot.dataset.src) return;
-    const img = new Image();
-    img.alt = slot.dataset.alt || '';
-    img.decoding = 'async';
-    if (slot.dataset.pos) img.style.objectPosition = slot.dataset.pos;
-    img.onload = () => { empty.remove(); slot.appendChild(img); };
-    img.src = slot.dataset.src;
-  };
   document.querySelectorAll('.sg-slot').forEach(fillSlot);
 
   /* ---------- Contact links: pre-fill WhatsApp / SMS ---------- */
@@ -48,7 +32,6 @@
   marquee.append(run(), run());
 
   /* ---------- Lessons ---------- */
-  const CHECK = '<svg width="16" height="16" viewBox="0 0 256 256" fill="#3fcf74" style="flex:none;margin-top:2px" aria-hidden="true"><path d="M229.7 77.7l-128 128a8 8 0 0 1-11.4 0l-56-56a8 8 0 0 1 11.4-11.4L96 188.7 218.3 66.3a8 8 0 0 1 11.4 11.4Z"></path></svg>';
   const LESSONS = [
     { name: 'Learner driver lessons', plate: '#F4C21B', ink: '#161826', letter: 'L', blurb: 'Brand new or still on your L’s? Start with the basics and build up at a pace that suits you.', items: ['Patient, one‑on‑one instruction', 'Clear, step‑by‑step explanations', 'Paced to your confidence level'], ask: 'learner driver lessons' },
     { name: 'Test preparation', plate: '#E3262B', ink: '#f3f5fe', letter: 'P1', featured: true, blurb: 'Getting ready for your drive test? Focused practice on the skills you’ll be assessed on.', items: ['Practise test manoeuvres', 'Honest feedback on your readiness', 'Calm and confident on the day'], ask: 'test preparation lessons' },
@@ -70,20 +53,66 @@
     lessonBox.appendChild(card);
   });
 
+  /* ---------- Editable content: defaults (shown until / unless Supabase answers) ---------- */
+  // Same shape as the Supabase tables edited from /admin (see supabase/migrations).
+  const DEFAULTS = {
+    reviews: [
+      { name: 'Chloe', reviewed_on: '2026-09-26', quote: 'Zubair was very helpful on my driving lesson! I haven’t driven in a while nor in Australia so just wanted to build my confidence and Zubair definitely helped with this. Thank you!' },
+      { name: 'Elisabetta', reviewed_on: '2026-09-19', quote: 'Very easy to work with and very understanding of skill and confidence level.' },
+      { name: 'Alex', reviewed_on: '2026-09-12', quote: 'Had my first lesson with Zubair today and I can’t recommend him enough. His instructions were clear, his advice was easy to understand and I already feel much more confident on the road. I highly recommend Zubair for learner drivers of any skill range that are looking for a patient and supportive instructor.' },
+    ],
+    passes: [
+      { name: 'Vijay', passed_on: '2026-07-30', photo_url: '/assets/img/pass-2.jpg', photo_focus: 'center', message: 'A fantastic achievement and a reflection of your hard work, dedication and commitment throughout your lessons. It’s been a pleasure watching your skills and confidence grow behind the wheel.' },
+      { name: 'Priya', passed_on: '2026-05-29', photo_url: '/assets/img/pass-1.jpg', photo_focus: 'center', message: 'Big congratulations to Priya for passing her driving test! She really appreciated the patient teaching style and the confidence she built on the road. So proud of her hard work and success.' },
+      { name: 'Danush', passed_on: '2026-04-02', photo_url: '/assets/img/pass-3.jpg', photo_focus: 'center', message: 'At the beginning he was nervous and often scared behind the wheel, but he stayed committed and didn’t give up. Lesson by lesson he listened, improved and started making quicker, better decisions. A well‑deserved pass, and he should be proud of how far he’s come.' },
+    ],
+    areas: ['Sunshine', 'Werribee', 'Melton', 'Coolaroo', 'Melbourne', 'Derrimut', 'Deer Park'].map((name) => ({ name })),
+    prices: [
+      { name: 'Single lesson', duration: 60, price: 70, unit: '/ lesson', note: 'Pay as you go', features: ['60‑minute one‑on‑one lesson', 'Paced to your confidence level', 'English, Hindi, Urdu or Telugu'] },
+      { name: '5‑lesson pack', duration: 60, price: 340, unit: '/ 5 lessons', note: 'Save $10', features: ['5 × 60‑minute lessons', 'A structured plan for your goals', 'Build skills lesson by lesson'] },
+      { name: '10‑lesson pack', duration: 60, price: 670, unit: '/ 10 lessons', note: 'Save $30', featured: true, featured_label: 'Best value', features: ['10 × 60‑minute lessons', 'From the basics to test ready', 'Our biggest saving'] },
+      { name: 'Lesson + test', duration: 60, price: 210, unit: '/ package', note: 'Warm‑up lesson + test day', features: ['60‑minute pre‑test warm‑up', 'Use of the Safe‑Gen car for your test', 'Calm and confident on the day'] },
+      { name: 'Single lesson', duration: 90, price: 100, unit: '/ lesson', note: 'Pay as you go', features: ['90‑minute one‑on‑one lesson', 'More time to practise and repeat', 'English, Hindi, Urdu or Telugu'] },
+      { name: 'Lesson + test', duration: 90, price: 240, unit: '/ package', note: 'Longer warm‑up + test day', features: ['90‑minute pre‑test warm‑up', 'Use of the Safe‑Gen car for your test', 'Calm and confident on the day'] },
+    ],
+  };
+
+  const showSection = (id, on) => {
+    $('#' + id).hidden = !on;
+    document.querySelectorAll(`a[href="#${id}"]`).forEach((a) => { a.hidden = !on; });
+  };
+
+  /* ---------- Prices + 60/90 min toggle ---------- */
+  const durBox = $('[data-durations]');
+  const priceBox = $('[data-prices]');
+  const renderPrices = (prices) => {
+    showSection('prices', prices.length > 0);
+    const durs = [...new Set(prices.map((p) => Number(p.duration) || 60))].sort((a, b) => a - b);
+    if (!durs.includes(state.dur)) state.dur = durs[0];
+    priceBox.innerHTML = '';
+    prices.filter((p) => (Number(p.duration) || 60) === state.dur).forEach((p) => priceBox.appendChild(priceCard(p)));
+    durBox.innerHTML = '';
+    durBox.hidden = durs.length < 2;
+    durs.forEach((d) => {
+      const on = state.dur === d;
+      const b = el('button', `padding:10px 18px;border:0;border-radius:9px;background:${on ? '#3f424d' : 'transparent'};color:${on ? '#f3f5fe' : '#9397ab'};font:600 13px var(--font-body);cursor:pointer;transition:all .2s`, d + ' min');
+      b.type = 'button';
+      b.setAttribute('aria-pressed', String(on));
+      b.addEventListener('click', () => { state.dur = d; renderPrices(prices); });
+      durBox.appendChild(b);
+    });
+  };
+
   /* ---------- Reviews carousel ---------- */
-  const REVIEWS = [
-    { quote: 'Zubair was very helpful on my driving lesson! I haven’t driven in a while nor in Australia so just wanted to build my confidence and Zubair definitely helped with this. Thank you!', name: 'Chloe', meta: 'Posted 26 Sep 2026' },
-    { quote: 'Very easy to work with and very understanding of skill and confidence level.', name: 'Elisabetta', meta: 'Posted 19 Sep 2026' },
-    { quote: 'Had my first lesson with Zubair today and I can’t recommend him enough. His instructions were clear, his advice was easy to understand and I already feel much more confident on the road. I highly recommend Zubair for learner drivers of any skill range that are looking for a patient and supportive instructor.', name: 'Alex', meta: 'Posted 12 Sep 2026' },
-  ];
-  const N = REVIEWS.length;
   const dots = $('[data-review-dots]');
+  let REVIEWS = [];
   const renderReview = () => {
     const r = REVIEWS[state.testi];
+    if (!r) return;
     $('[data-review-quote]').textContent = r.quote;
-    $('[data-review-initials]').textContent = r.name[0];
+    $('[data-review-initials]').textContent = initial(r.name);
     $('[data-review-name]').textContent = r.name;
-    $('[data-review-meta]').textContent = r.meta;
+    $('[data-review-meta]').textContent = reviewDate(r.reviewed_on);
     dots.innerHTML = '';
     REVIEWS.forEach((_, i) => {
       const on = i === state.testi;
@@ -94,35 +123,28 @@
       dots.appendChild(d);
     });
   };
-  $('[data-review-prev]').addEventListener('click', () => { state.testi = (state.testi + N - 1) % N; renderReview(); });
-  $('[data-review-next]').addEventListener('click', () => { state.testi = (state.testi + 1) % N; renderReview(); });
-  setInterval(() => { state.testi = (state.testi + 1) % N; renderReview(); }, 9000);
-  renderReview();
+  const step = (n) => { if (REVIEWS.length) { state.testi = (state.testi + n + REVIEWS.length) % REVIEWS.length; renderReview(); } };
+  $('[data-review-prev]').addEventListener('click', () => step(-1));
+  $('[data-review-next]').addEventListener('click', () => step(1));
+  setInterval(() => step(1), 9000);
+  const renderReviews = (reviews) => {
+    REVIEWS = reviews;
+    state.testi = 0;
+    showSection('reviews', reviews.length > 0);
+    $('[data-review-prev]').hidden = $('[data-review-next]').hidden = reviews.length < 2;
+    renderReview();
+  };
 
-  /* ---------- Pass stories (from the Safe-Gen Facebook page) ---------- */
-  const STORIES = [
-    { name: 'Vijay', date: '30 July', photo: 'pass-2.jpg', pos: 'center 35%', alt: 'Vijay giving two thumbs up beside the Safe-Gen car after passing his test', text: 'A fantastic achievement and a reflection of your hard work, dedication and commitment throughout your lessons. It’s been a pleasure watching your skills and confidence grow behind the wheel.' },
-    { name: 'Priya', date: '29 May', photo: 'pass-1.jpg', pos: 'center 30%', alt: 'Priya holding her driver licence receipt in front of the Safe-Gen car', text: 'Big congratulations to Priya for passing her driving test! She really appreciated the patient teaching style and the confidence she built on the road. So proud of her hard work and success.' },
-    { name: 'Danush', date: '2 April', photo: 'pass-3.jpg', pos: 'center 35%', alt: 'Danush holding his licence receipt and P plates next to the Safe-Gen car', text: 'At the beginning he was nervous and often scared behind the wheel, but he stayed committed and didn’t give up. Lesson by lesson he listened, improved and started making quicker, better decisions. A well‑deserved pass, and he should be proud of how far he’s come.' },
-  ];
+  /* ---------- Recent passes ---------- */
   const storyBox = $('[data-stories]');
-  STORIES.forEach((t) => {
-    const card = el('article', 'border-radius:18px;overflow:hidden;background:#1b1d2b;box-shadow:0 0 0 1px #292b31;display:flex;flex-direction:column',
-      `<figure class="sg-photo" style="border-radius:0;box-shadow:none"><div class="sg-slot" data-src="/assets/img/${t.photo}" data-pos="${t.pos}" data-alt="${esc(t.alt)}" data-placeholder="${esc(t.name)}"></div></figure>
-       <div style="padding:24px 26px 26px;display:flex;flex-direction:column;gap:12px">
-         <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
-           <span style="display:flex;align-items:center;gap:10px"><span style="padding:3px 9px;border-radius:7px;background:#1F7A3F;color:#f3f5fe;font:italic 900 14px/1.3 'Saira',sans-serif">P</span><span style="font:italic 800 20px 'Saira',sans-serif;color:#f3f5fe">Congrats, ${esc(t.name)}!</span></span>
-           <span style="font:500 12px var(--font-body);color:#75798c;white-space:nowrap">${esc(t.date)}</span>
-         </div>
-         <p style="margin:0;font:400 14px/1.6 var(--font-body);color:#b2b6ca">${esc(t.text)}</p>
-       </div>`);
-    card.className = 'sg-pass';
-    storyBox.appendChild(card);
-    fillSlot($('.sg-slot', card));
-  });
+  const renderPasses = (passes) => {
+    showSection('passes', passes.length > 0);
+    storyBox.innerHTML = '';
+    passes.forEach((t) => storyBox.appendChild(passCard(t)));
+  };
 
   /* ---------- Areas + suburb check ---------- */
-  const AREAS = ['Sunshine', 'Werribee', 'Melton', 'Coolaroo', 'Melbourne', 'Derrimut', 'Deer Park'];
+  let AREAS = [];
   const input = $('[data-suburb]');
   const msg = $('[data-suburb-msg]');
   const areaBox = $('[data-areas]');
@@ -133,16 +155,43 @@
     msg.style.color = hit ? '#7fe0a3' : '#b2b6ca';
     areaBox.innerHTML = '';
     AREAS.forEach((n) => {
-      const on = hit === n;
-      const b = el('button', `padding:11px 16px;border-radius:999px;border:1px solid ${on ? '#E3262B' : '#3f424d'};background:${on ? 'rgba(227,38,43,.14)' : 'transparent'};color:#e9e9ed;font:500 14px var(--font-body);cursor:pointer;transition:all .2s`, n);
-      b.type = 'button';
-      b.className = 'sg-area';
+      const b = areaPill(n, hit === n);
       b.addEventListener('click', () => { input.value = n; renderAreas(); });
       areaBox.appendChild(b);
     });
   };
   input.addEventListener('input', renderAreas);
-  renderAreas();
+
+  /* ---------- Load content from Supabase (falls back to DEFAULTS) ---------- */
+  const render = (c) => {
+    renderPrices(c.prices);
+    renderReviews(c.reviews);
+    renderPasses(c.passes);
+    AREAS = c.areas.map((a) => a.name);
+    renderAreas();
+  };
+  const CFG = window.SAFEGEN_CONFIG || {};
+  const fetchTable = async (table, order) => {
+    const res = await fetch(`${CFG.supabaseUrl}/rest/v1/${table}?select=*&order=${order}`, {
+      headers: { apikey: CFG.supabaseAnonKey },
+    });
+    if (!res.ok) throw new Error(`${table}: ${res.status}`);
+    return res.json();
+  };
+  const loadContent = async () => {
+    if (!CFG.supabaseUrl || !CFG.supabaseAnonKey) return DEFAULTS;
+    const [prices, reviews, passes, areas] = await Promise.all([
+      fetchTable('prices', 'sort_order.asc,created_at.asc'),
+      fetchTable('reviews', 'reviewed_on.desc,created_at.desc'),
+      fetchTable('passes', 'passed_on.desc,created_at.desc'),
+      fetchTable('areas', 'sort_order.asc,name.asc'),
+    ]);
+    return { prices, reviews, passes, areas };
+  };
+  const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 5000));
+  Promise.race([loadContent(), timeout])
+    .then(render)
+    .catch((err) => { console.warn('Safe-Gen: showing built-in content:', err.message); render(DEFAULTS); });
 
   $('[data-year]').textContent = new Date().getFullYear();
 })();

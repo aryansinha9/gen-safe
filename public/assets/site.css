@@ -1,6 +1,7 @@
 /* Page-level rules from the Claude Design export (Safe Gen Driving.dc.html → <helmet>),
    plus the hover states the design declared with style-hover, and phone-width fixes. */
 html { scroll-behavior: smooth; }
+[hidden] { display: none !important; }
 body{margin:0;background:#161826;color:#e9e9ed;font-family:var(--font-body);-webkit-font-smoothing:antialiased}
 a{color:#e9e9ed;text-decoration:none}a:hover{color:#ff8a8d}
 @keyframes sgDash{from{background-position:0 0}to{background-position:-96px 0}}
@@ -79,7 +80,7 @@ section[id], #book { scroll-margin-top: 90px; }
   #book { left: 12px !important; right: 12px !important; bottom: 12px !important; padding: 16px !important; }
   .sg-section { padding-left: 16px !important; padding-right: 16px !important; }
   #about.sg-section { padding-top: 80px !important; padding-bottom: 56px !important; }
-  #lessons.sg-section, #passes.sg-section, #journey .sg-section, #areas .sg-section, .sg-reviews { padding-top: 80px !important; padding-bottom: 80px !important; }
+  #lessons.sg-section, #passes.sg-section, #prices .sg-section, #journey .sg-section, #areas .sg-section, .sg-reviews { padding-top: 80px !important; padding-bottom: 80px !important; }
   section[data-screen-label="Why Safe-Gen"] { padding-bottom: 80px !important; }
   .sg-why-media { min-height: 0 !important; padding: 28px !important; }
   #about .sg-why-media { order: 2; }
