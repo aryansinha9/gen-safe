@@ -4,7 +4,8 @@ The admin can sign in at **`https://<site-domain>/admin`** and add, edit, delete
 
 | Tab | Site section | What can be edited |
 | --- | --- | --- |
-| Recent passes | Recent passes | Photo (upload), photo framing, student name, date, congratulations message |
+| Recent passes | Recent passes (home) | Photo (upload), photo framing, student name, date, congratulations message |
+| Recent lessons | Recent lessons (Lessons page) | Photo (upload), photo framing, title, date, short message |
 | Reviews | Student reviews | Name, date posted, review text |
 | Prices | Prices & packages | Name, 60/90 min, price, price label, highlight line, included points, “highlight” badge, order |
 | Areas | Areas we service | Suburb names, order (also used by “Check your suburb”) |
@@ -31,7 +32,7 @@ so edited content always matches the site’s design. Editors fill in fields; th
 1. **Create a Supabase project** at <https://supabase.com> (the free plan is enough). Pick the Sydney region.
 2. **Create the tables, security rules, photo bucket and starting content.** Either:
    - Dashboard → **SQL Editor** → paste and run `supabase/migrations/20261004000000_site_content.sql`,
-     then `supabase/migrations/20261004000100_grants.sql`, or
+     then `supabase/migrations/20261004000100_grants.sql` and `20261004000200_recent_lessons.sql`, or
    - CLI: `supabase link --project-ref <ref>` then `supabase db push`.
 3. **Turn off public sign-ups:** Authentication → Sign In / Providers → turn off **Allow new users to sign up**.
    (Leave the **Email** provider enabled.)

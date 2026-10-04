@@ -53,21 +53,37 @@ window.SafeGen = (() => {
     return card;
   };
 
-  /* ---------- Recent pass card ---------- */
-  const passCard = (t) => {
+  /* ---------- Photo story card (recent passes + recent lessons share this design) ---------- */
+  const photoCard = ({ photo_url, photo_focus, alt, placeholder, plate, plateBg, plateInk, heading, date, text }) => {
     const card = el('article', 'border-radius:18px;overflow:hidden;background:#1b1d2b;box-shadow:0 0 0 1px #292b31;display:flex;flex-direction:column',
-      `<figure class="sg-photo" style="border-radius:0;box-shadow:none"><div class="sg-slot" data-src="${esc(safeImg(t.photo_url))}" data-pos="${FOCUS[t.photo_focus] || FOCUS.center}" data-alt="${esc(`${t.name} after passing their driving test with Safe-Gen`)}" data-placeholder="${esc(t.name || 'Photo')}"></div></figure>
+      `<figure class="sg-photo" style="border-radius:0;box-shadow:none"><div class="sg-slot" data-src="${esc(safeImg(photo_url))}" data-pos="${FOCUS[photo_focus] || FOCUS.center}" data-alt="${esc(alt)}" data-placeholder="${esc(placeholder || 'Photo')}"></div></figure>
        <div style="padding:24px 26px 26px;display:flex;flex-direction:column;gap:12px">
          <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
-           <span style="display:flex;align-items:center;gap:10px;min-width:0"><span style="padding:3px 9px;border-radius:7px;background:#1F7A3F;color:#f3f5fe;font:italic 900 14px/1.3 'Saira',sans-serif">P</span><span style="font:italic 800 20px 'Saira',sans-serif;color:#f3f5fe;overflow-wrap:anywhere">Congrats, ${esc(t.name)}!</span></span>
-           <span style="font:500 12px var(--font-body);color:#75798c;white-space:nowrap">${esc(passDate(t.passed_on))}</span>
+           <span style="display:flex;align-items:center;gap:10px;min-width:0"><span style="padding:3px 9px;border-radius:7px;background:${plateBg};color:${plateInk};font:italic 900 14px/1.3 'Saira',sans-serif">${plate}</span><span style="font:italic 800 20px 'Saira',sans-serif;color:#f3f5fe;overflow-wrap:anywhere">${esc(heading)}</span></span>
+           <span style="font:500 12px var(--font-body);color:#75798c;white-space:nowrap">${esc(date)}</span>
          </div>
-         <p style="margin:0;font:400 14px/1.6 var(--font-body);color:#b2b6ca;white-space:pre-line">${esc(t.message)}</p>
+         <p style="margin:0;font:400 14px/1.6 var(--font-body);color:#b2b6ca;white-space:pre-line">${esc(text)}</p>
        </div>`);
     card.className = 'sg-pass';
     fillSlot(card.querySelector('.sg-slot'));
     return card;
   };
+
+  /* ---------- Recent pass card ---------- */
+  const passCard = (t) => photoCard({
+    photo_url: t.photo_url, photo_focus: t.photo_focus, placeholder: t.name,
+    alt: `${t.name} after passing their driving test with Safe-Gen`,
+    plate: 'P', plateBg: '#1F7A3F', plateInk: '#f3f5fe',
+    heading: `Congrats, ${t.name}!`, date: passDate(t.passed_on), text: t.message,
+  });
+
+  /* ---------- Recent lesson card ---------- */
+  const lessonCard = (t) => photoCard({
+    photo_url: t.photo_url, photo_focus: t.photo_focus, placeholder: t.title,
+    alt: `Safe-Gen driving lesson: ${t.title}`,
+    plate: 'L', plateBg: '#F4C21B', plateInk: '#161826',
+    heading: t.title, date: passDate(t.lesson_on), text: t.message,
+  });
 
   /* ---------- Review (same markup as the reviews section's quote block) ---------- */
   const reviewBlock = (r) => el('div', 'display:flex;flex-direction:column;gap:24px',
@@ -86,5 +102,5 @@ window.SafeGen = (() => {
     return b;
   };
 
-  return { el, esc, CHECK, packageLabel, reviewDate, passDate, initial, fillSlot, priceCard, passCard, reviewBlock, areaPill };
+  return { el, esc, CHECK, packageLabel, reviewDate, passDate, initial, fillSlot, priceCard, passCard, lessonCard, reviewBlock, areaPill };
 })();

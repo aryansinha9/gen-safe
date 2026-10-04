@@ -45,7 +45,7 @@
 .adm-empty p { margin: 0; }
 
 .adm-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr)); gap: 16px; align-items: start; }
-.adm-cards-passes { grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr)); }
+.adm-cards-passes, .adm-cards-lessons { grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr)); }
 .adm-card-item { display: flex; flex-direction: column; gap: 8px; }
 .adm-card-preview { cursor: pointer; border-radius: 18px; transition: box-shadow .2s; }
 .adm-card-preview:hover { box-shadow: 0 0 0 2px #ff4a4f; }

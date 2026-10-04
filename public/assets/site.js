@@ -1,10 +1,10 @@
-// Safe-Gen Driving: page interactivity. Prices, reviews, passes and areas load from Supabase (edited at /admin).
+// Safe-Gen Driving: page interactivity. Prices, reviews, passes, recent lessons and areas load from Supabase (edited at /admin).
 (() => {
   // Old one-page links (/#prices etc.) now live on their own pages.
   const MOVED = { '#about': '/about', '#lessons': '/lessons', '#journey': '/lessons', '#prices': '/prices', '#contact': '/contact', '#book': '/contact', '#areas': '/contact' };
   if (location.pathname === '/' && MOVED[location.hash]) { location.replace(MOVED[location.hash]); return; }
 
-  const { el, esc, CHECK, packageLabel, reviewDate, initial, fillSlot, priceCard, passCard, areaPill } = window.SafeGen;
+  const { el, esc, CHECK, packageLabel, reviewDate, initial, fillSlot, priceCard, passCard, lessonCard, areaPill } = window.SafeGen;
   const $ = (q, r = document) => r.querySelector(q);
   const state = { testi: 0, dur: 60 };
 
@@ -65,6 +65,7 @@
       { name: 'Priya', passed_on: '2026-05-29', photo_url: '/assets/img/pass-1.jpg', photo_focus: 'center', message: 'Big congratulations to Priya for passing her driving test! She really appreciated the patient teaching style and the confidence she built on the road. So proud of her hard work and success.' },
       { name: 'Danush', passed_on: '2026-04-02', photo_url: '/assets/img/pass-3.jpg', photo_focus: 'center', message: 'At the beginning he was nervous and often scared behind the wheel, but he stayed committed and didn’t give up. Lesson by lesson he listened, improved and started making quicker, better decisions. A well‑deserved pass, and he should be proud of how far he’s come.' },
     ],
+    recent_lessons: [],
     areas: ['Sunshine', 'Werribee', 'Melton', 'Coolaroo', 'Melbourne', 'Derrimut', 'Deer Park'].map((name) => ({ name })),
     prices: [
       { name: 'Single lesson', duration: 60, price: 70, unit: '/ lesson', note: 'Pay as you go', features: ['60‑minute one‑on‑one lesson', 'Paced to your confidence level', 'English, Hindi, Urdu or Telugu'] },
@@ -142,6 +143,15 @@
     showSection('passes', passes.length > 0);
     storyBox.innerHTML = '';
     passes.forEach((t) => storyBox.appendChild(passCard(t)));
+  };
+
+  /* ---------- Recent lessons ---------- */
+  const recentBox = $('[data-recent-lessons]');
+  const renderRecentLessons = (rows) => {
+    if (!recentBox) return;
+    showSection('recent-lessons', rows.length > 0);
+    recentBox.innerHTML = '';
+    rows.forEach((t) => recentBox.appendChild(lessonCard(t)));
   };
 
   /* ---------- Areas + suburb check ---------- */
@@ -238,6 +248,7 @@
     prices: { order: 'sort_order.asc,created_at.asc', needed: !!(priceBox || form) },
     reviews: { order: 'reviewed_on.desc,created_at.desc', needed: !!dots },
     passes: { order: 'passed_on.desc,created_at.desc', needed: !!storyBox },
+    recent_lessons: { order: 'lesson_on.desc,created_at.desc', needed: !!recentBox },
     areas: { order: 'sort_order.asc,name.asc', needed: !!areaBox },
   };
   const render = (c) => {
@@ -245,6 +256,7 @@
     renderEnquiryOptions(c.prices);
     renderReviews(c.reviews);
     renderPasses(c.passes);
+    renderRecentLessons(c.recent_lessons);
     AREAS = c.areas.map((a) => a.name);
     renderAreas();
   };
@@ -260,7 +272,8 @@
   const loadContent = async () => {
     if (!CFG.supabaseUrl || !CFG.supabaseAnonKey) return DEFAULTS;
     const names = Object.keys(TABLES);
-    const rows = await Promise.all(names.map(fetchTable));
+    // Each table falls back to its built-in copy on its own, so one failure can't blank the others.
+    const rows = await Promise.all(names.map((n) => fetchTable(n).catch((err) => { console.warn(`Safe-Gen: built-in ${n}:`, err.message); return DEFAULTS[n]; })));
     return Object.fromEntries(names.map((n, i) => [n, rows[i]]));
   };
   if (Object.values(TABLES).some((t) => t.needed)) {

@@ -1,7 +1,7 @@
 // Safe-Gen admin dashboard: sign in with Supabase Auth, then add / edit / delete / reorder
 // the site's editable content. Previews use the same templates as the public site (assets/templates.js).
 (() => {
-  const { el, esc, priceCard, passCard, reviewBlock, areaPill, reviewDate, passDate } = window.SafeGen;
+  const { el, esc, priceCard, passCard, lessonCard, reviewBlock, areaPill, reviewDate, passDate } = window.SafeGen;
   const $ = (q, r = document) => r.querySelector(q);
   const CFG = window.SAFEGEN_CONFIG || {};
   const BUCKET = 'site-images';
@@ -25,7 +25,7 @@
     passes: {
       label: 'Recent passes', kicker: 'Recent passes section', noun: 'pass',
       desc: 'Students who passed. Newest first on the site. Each card shows the photo, name, date and message.',
-      table: 'passes', order: [['passed_on', false], ['created_at', false]],
+      table: 'passes', order: [['passed_on', false], ['created_at', false]], photos: 'passes',
       blank: () => ({ name: '', passed_on: today(), message: '', photo_url: null, photo_path: null, photo_focus: 'center' }),
       fields: [
         { key: 'name', label: 'Student name', type: 'text', max: 60, required: true, hint: 'Shown as “Congrats, Name!”' },
@@ -38,6 +38,23 @@
       layout: 'cards',
       card: (r) => passCard(r),
       title: (r) => `${r.name} · ${passDate(r.passed_on)}`,
+    },
+    lessons: {
+      label: 'Recent lessons', kicker: 'Recent lessons section (Lessons page)', noun: 'lesson',
+      desc: 'Photos and notes from recent lessons, newest first. Shown on the Lessons page once you add one.',
+      table: 'recent_lessons', order: [['lesson_on', false], ['created_at', false]], photos: 'lessons',
+      blank: () => ({ title: '', lesson_on: today(), message: '', photo_url: null, photo_path: null, photo_focus: 'center' }),
+      fields: [
+        { key: 'title', label: 'Title', type: 'text', max: 60, required: true, hint: 'e.g. “Roundabout practice in Sunshine” or a student’s first lesson' },
+        { key: 'lesson_on', label: 'Lesson date', type: 'date', required: true },
+        { key: 'photo', label: 'Photo', type: 'image' },
+        { key: 'photo_focus', label: 'Photo framing', type: 'select', options: [['top', 'Show the top of the photo'], ['center', 'Centred'], ['bottom', 'Show the bottom of the photo']], hint: 'Adjust if a face gets cropped in the preview.' },
+        { key: 'message', label: 'Short message', type: 'textarea', max: 1200, rows: 5, required: true },
+      ],
+      preview: (v) => lessonCard(v),
+      layout: 'cards',
+      card: (r) => lessonCard(r),
+      title: (r) => `${r.title} · ${passDate(r.lesson_on)}`,
     },
     reviews: {
       label: 'Reviews', kicker: 'Student reviews section', noun: 'review',
@@ -435,6 +452,7 @@
   /* ---------- Save ---------- */
   const COLUMNS = {
     passes: ['name', 'passed_on', 'message', 'photo_url', 'photo_path', 'photo_focus'],
+    lessons: ['title', 'lesson_on', 'message', 'photo_url', 'photo_path', 'photo_focus'],
     reviews: ['name', 'reviewed_on', 'quote'],
     prices: ['name', 'duration', 'price', 'unit', 'note', 'features', 'featured', 'featured_label'],
     areas: ['name'],
@@ -468,9 +486,9 @@
     let uploadedPath = null;
     try {
       const v = state.values;
-      if (state.tab === 'passes') {
+      if (t.photos) {
         if (state.photo) {
-          uploadedPath = `passes/${crypto.randomUUID()}.jpg`;
+          uploadedPath = `${t.photos}/${crypto.randomUUID()}.jpg`;
           const up = await sb.storage.from(BUCKET).upload(uploadedPath, state.photo.blob, { contentType: 'image/jpeg', cacheControl: '31536000' });
           if (up.error) throw up.error;
           v.photo_url = sb.storage.from(BUCKET).getPublicUrl(uploadedPath).data.publicUrl;
@@ -481,7 +499,6 @@
       }
       const payload = {};
       COLUMNS[state.tab].forEach((c) => { payload[c] = typeof v[c] === 'string' ? v[c].trim() : v[c]; });
-      if (state.tab === 'passes') payload.message = v.message.trim();
       if (t.sortable && !state.editing) payload.sort_order = Math.max(0, ...state.rows.map((r) => r.sort_order || 0)) + 1;
       const res = state.editing
         ? await sb.from(t.table).update(payload).eq('id', state.editing.id).select().single()
