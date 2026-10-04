@@ -1,16 +1,14 @@
 // Safe-Gen Driving: page interactivity. Prices, reviews, passes and areas load from Supabase (edited at /admin).
 (() => {
-  const { el, esc, WA, CHECK, reviewDate, initial, fillSlot, priceCard, passCard, areaPill } = window.SafeGen;
+  // Old one-page links (/#prices etc.) now live on their own pages.
+  const MOVED = { '#about': '/about', '#lessons': '/lessons', '#journey': '/lessons', '#prices': '/prices', '#contact': '/contact', '#book': '/contact', '#areas': '/contact' };
+  if (location.pathname === '/' && MOVED[location.hash]) { location.replace(MOVED[location.hash]); return; }
+
+  const { el, esc, CHECK, packageLabel, reviewDate, initial, fillSlot, priceCard, passCard, areaPill } = window.SafeGen;
   const $ = (q, r = document) => r.querySelector(q);
-  const SMS = 'sms:+61470452803';
-  const MSG = "Hi Safe-Gen, I'd like to book a driving lesson.";
   const state = { testi: 0, dur: 60 };
 
   document.querySelectorAll('.sg-slot').forEach(fillSlot);
-
-  /* ---------- Contact links: pre-fill WhatsApp / SMS ---------- */
-  document.querySelectorAll('[data-wa]').forEach((a) => { a.href = `${WA}?text=${encodeURIComponent(MSG)}`; });
-  document.querySelectorAll('[data-sms]').forEach((a) => { a.href = `${SMS}?&body=${encodeURIComponent(MSG)}`; });
 
   /* ---------- Marquee wordmark ---------- */
   const marquee = $('[data-marquee]');
@@ -29,16 +27,17 @@
     });
     return wrap;
   };
-  marquee.append(run(), run());
+  if (marquee) marquee.append(run(), run());
 
   /* ---------- Lessons ---------- */
   const LESSONS = [
-    { name: 'Learner driver lessons', plate: '#F4C21B', ink: '#161826', letter: 'L', blurb: 'Brand new or still on your L’s? Start with the basics and build up at a pace that suits you.', items: ['Patient, one‑on‑one instruction', 'Clear, step‑by‑step explanations', 'Paced to your confidence level'], ask: 'learner driver lessons' },
-    { name: 'Test preparation', plate: '#E3262B', ink: '#f3f5fe', letter: 'P1', featured: true, blurb: 'Getting ready for your drive test? Focused practice on the skills you’ll be assessed on.', items: ['Practise test manoeuvres', 'Honest feedback on your readiness', 'Calm and confident on the day'], ask: 'test preparation lessons' },
-    { name: 'Confidence & refresher', plate: '#1F7A3F', ink: '#f3f5fe', letter: 'P', blurb: 'Licensed but out of practice, or new to driving in Australia? Rebuild your confidence on local roads.', items: ['Overseas & returning drivers', 'Local road rules and conditions', 'Go at your own pace'], ask: 'a confidence / refresher lesson' },
+    { name: 'Learner driver lessons', plate: '#F4C21B', ink: '#161826', letter: 'L', blurb: 'Brand new or still on your L’s? Start with the basics and build up at a pace that suits you.', items: ['Patient, one‑on‑one instruction', 'Clear, step‑by‑step explanations', 'Paced to your confidence level'] },
+    { name: 'Test preparation', plate: '#E3262B', ink: '#f3f5fe', letter: 'P1', featured: true, blurb: 'Getting ready for your drive test? Focused practice on the skills you’ll be assessed on.', items: ['Practise test manoeuvres', 'Honest feedback on your readiness', 'Calm and confident on the day'] },
+    { name: 'Confidence & refresher', plate: '#1F7A3F', ink: '#f3f5fe', letter: 'P', blurb: 'Licensed but out of practice, or new to driving in Australia? Rebuild your confidence on local roads.', items: ['Overseas & returning drivers', 'Local road rules and conditions', 'Go at your own pace'] },
   ];
+  const enquireUrl = (interest) => `/contact?interest=${encodeURIComponent(interest)}`;
   const lessonBox = $('[data-lessons]');
-  LESSONS.forEach((l) => {
+  if (lessonBox) LESSONS.forEach((l) => {
     const f = !!l.featured;
     const card = el('div', `position:relative;padding:28px;border-radius:18px;background:${f ? 'linear-gradient(170deg,#2c1d25,#1d1e2c 60%)' : '#1b1d2b'};box-shadow:${f ? '0 0 0 1px #E3262B,0 30px 70px rgba(227,38,43,.16)' : '0 0 0 1px #292b31'};display:flex;flex-direction:column;gap:18px;transition:transform .3s`,
       `<div style="width:48px;height:48px;border-radius:12px;background:${l.plate};color:${l.ink};font:italic 900 ${l.letter.length > 1 ? 24 : 30}px/48px 'Saira',sans-serif;text-align:center">${l.letter}</div>
@@ -48,7 +47,7 @@
        <div style="display:flex;flex-direction:column;gap:10px;flex:1">
          ${l.items.map((it) => `<div style="display:flex;gap:10px;align-items:start;font:400 14px/1.45 var(--font-body);color:#cfd3e5">${CHECK}${esc(it)}</div>`).join('')}
        </div>
-       <a href="${WA}?text=${encodeURIComponent(`Hi Safe-Gen, I'm interested in ${l.ask}.`)}" target="_blank" rel="noopener" class="btn btn-block ${f ? 'btn-primary' : 'btn-secondary'}" style="padding:12px;font-size:14px;${f ? 'border-color:#E3262B;background:#E3262B;color:#f3f5fe' : ''}">Ask about this lesson</a>`);
+       <a href="${esc(enquireUrl(l.name))}" class="btn btn-block ${f ? 'btn-primary' : 'btn-secondary'}" style="padding:12px;font-size:14px;${f ? 'border-color:#E3262B;background:#E3262B;color:#f3f5fe' : ''}">Ask about this lesson</a>`);
     card.className = 'sg-package';
     lessonBox.appendChild(card);
   });
@@ -77,15 +76,13 @@
     ],
   };
 
-  const showSection = (id, on) => {
-    $('#' + id).hidden = !on;
-    document.querySelectorAll(`a[href="#${id}"]`).forEach((a) => { a.hidden = !on; });
-  };
+  const showSection = (id, on) => { const sec = $('#' + id); if (sec) sec.hidden = !on; };
 
   /* ---------- Prices + 60/90 min toggle ---------- */
   const durBox = $('[data-durations]');
   const priceBox = $('[data-prices]');
   const renderPrices = (prices) => {
+    if (!priceBox) return;
     showSection('prices', prices.length > 0);
     const durs = [...new Set(prices.map((p) => Number(p.duration) || 60))].sort((a, b) => a - b);
     if (!durs.includes(state.dur)) state.dur = durs[0];
@@ -124,10 +121,13 @@
     });
   };
   const step = (n) => { if (REVIEWS.length) { state.testi = (state.testi + n + REVIEWS.length) % REVIEWS.length; renderReview(); } };
-  $('[data-review-prev]').addEventListener('click', () => step(-1));
-  $('[data-review-next]').addEventListener('click', () => step(1));
-  setInterval(() => step(1), 9000);
+  if (dots) {
+    $('[data-review-prev]').addEventListener('click', () => step(-1));
+    $('[data-review-next]').addEventListener('click', () => step(1));
+    setInterval(() => step(1), 9000);
+  }
   const renderReviews = (reviews) => {
+    if (!dots) return;
     REVIEWS = reviews;
     state.testi = 0;
     showSection('reviews', reviews.length > 0);
@@ -138,6 +138,7 @@
   /* ---------- Recent passes ---------- */
   const storyBox = $('[data-stories]');
   const renderPasses = (passes) => {
+    if (!storyBox) return;
     showSection('passes', passes.length > 0);
     storyBox.innerHTML = '';
     passes.forEach((t) => storyBox.appendChild(passCard(t)));
@@ -149,9 +150,10 @@
   const msg = $('[data-suburb-msg]');
   const areaBox = $('[data-areas]');
   const renderAreas = () => {
+    if (!areaBox) return;
     const q = input.value.trim().toLowerCase();
     const hit = AREAS.find((a) => a.toLowerCase() === q) || (q.length > 2 && AREAS.find((a) => a.toLowerCase().startsWith(q)));
-    msg.textContent = !q ? '' : hit ? '✓ Yes, we teach in ' + hit + '.' : 'Not on our list yet. Call or WhatsApp 0470 452 803 and we’ll let you know.';
+    msg.textContent = !q ? '' : hit ? '✓ Yes, we teach in ' + hit + '.' : 'Not on our list yet. Call 0470 452 803 or send an enquiry and we’ll let you know.';
     msg.style.color = hit ? '#7fe0a3' : '#b2b6ca';
     areaBox.innerHTML = '';
     AREAS.forEach((n) => {
@@ -160,19 +162,96 @@
       areaBox.appendChild(b);
     });
   };
-  input.addEventListener('input', renderAreas);
+  if (input) input.addEventListener('input', renderAreas);
 
-  /* ---------- Load content from Supabase (falls back to DEFAULTS) ---------- */
+  /* ---------- Enquiry form (Web3Forms → the school's email) ---------- */
+  const form = $('[data-enquiry]');
+  const select = $('[data-enquire-select]');
+  const OTHER = 'Something else / not sure yet';
+  // "Book now" / "Ask about this lesson" buttons link to /contact?interest=… to pre-select the option.
+  let wanted = new URLSearchParams(location.search).get('interest');
+  if (wanted) history.replaceState(null, '', location.pathname); // keep the address bar clean: /contact
+  const addOption = (parent, text) => { const o = el('option', null, esc(text)); o.value = text; parent.appendChild(o); };
+  const chooseOption = (text) => {
+    if (![...select.options].some((o) => o.value === text)) addOption(select, text);
+    select.value = text;
+  };
+  const renderEnquiryOptions = (prices) => {
+    if (!form) return;
+    const keep = wanted || select.value;
+    wanted = null;
+    select.length = 1;
+    const lessons = el('optgroup'); lessons.label = 'Lessons';
+    LESSONS.forEach((l) => addOption(lessons, l.name));
+    select.appendChild(lessons);
+    if (prices.length) {
+      const pk = el('optgroup'); pk.label = 'Prices & packages';
+      prices.forEach((p) => addOption(pk, packageLabel(p)));
+      select.appendChild(pk);
+    }
+    addOption(select, OTHER);
+    if (keep) chooseOption(keep.slice(0, 120));
+  };
+
+  if (form) {
+    const formError = (m) => { const e = $('[data-enquiry-error]'); e.textContent = m || ''; e.hidden = !m; };
+    $('[data-enquiry-again]').addEventListener('click', () => {
+      form.reset();
+      formError('');
+      $('[data-enquiry-done]').hidden = true;
+    });
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const f = form.elements;
+      const name = f.name.value.trim();
+      const phone = f.phone.value.trim();
+      const email = f.email.value.trim();
+      if (!name) { formError('Please enter your name.'); f.name.focus(); return; }
+      if (phone.replace(/\D/g, '').length < 8) { formError('Please enter a phone number we can reach you on.'); f.phone.focus(); return; }
+      if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { formError('That email address doesn’t look right.'); f.email.focus(); return; }
+      formError('');
+      const btn = form.querySelector('[type=submit]');
+      btn.disabled = true;
+      btn.textContent = 'Sending…';
+      const data = Object.fromEntries(new FormData(form));
+      Object.keys(data).forEach((k) => { if (typeof data[k] === 'string') data[k] = data[k].trim(); if (data[k] === '') delete data[k]; });
+      data.interested_in = data.interested_in || 'Not specified';
+      data.subject = `New lesson enquiry: ${name}${f.interested_in.value ? ' · ' + f.interested_in.value : ''}`;
+      try {
+        const res = await fetch(form.action, { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify(data) });
+        const out = await res.json().catch(() => ({}));
+        if (!res.ok || !out.success) throw new Error(out.message || `HTTP ${res.status}`);
+        $('[data-enquiry-done-text]').textContent = `Thanks, ${name.split(' ')[0]}! Zubair will be in touch soon. Need an answer sooner? Call 0470 452 803.`;
+        $('[data-enquiry-done]').hidden = false;
+      } catch (err) {
+        console.warn('Enquiry failed:', err.message);
+        formError('Sorry, your enquiry didn’t send. Please try again, or call 0470 452 803.');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Send enquiry';
+      }
+    });
+  }
+
+  /* ---------- Load this page's content from Supabase (falls back to DEFAULTS) ---------- */
+  const TABLES = {
+    prices: { order: 'sort_order.asc,created_at.asc', needed: !!(priceBox || form) },
+    reviews: { order: 'reviewed_on.desc,created_at.desc', needed: !!dots },
+    passes: { order: 'passed_on.desc,created_at.desc', needed: !!storyBox },
+    areas: { order: 'sort_order.asc,name.asc', needed: !!areaBox },
+  };
   const render = (c) => {
     renderPrices(c.prices);
+    renderEnquiryOptions(c.prices);
     renderReviews(c.reviews);
     renderPasses(c.passes);
     AREAS = c.areas.map((a) => a.name);
     renderAreas();
   };
   const CFG = window.SAFEGEN_CONFIG || {};
-  const fetchTable = async (table, order) => {
-    const res = await fetch(`${CFG.supabaseUrl}/rest/v1/${table}?select=*&order=${order}`, {
+  const fetchTable = async (table) => {
+    if (!TABLES[table].needed) return DEFAULTS[table];
+    const res = await fetch(`${CFG.supabaseUrl}/rest/v1/${table}?select=*&order=${TABLES[table].order}`, {
       headers: { apikey: CFG.supabaseAnonKey },
     });
     if (!res.ok) throw new Error(`${table}: ${res.status}`);
@@ -180,18 +259,16 @@
   };
   const loadContent = async () => {
     if (!CFG.supabaseUrl || !CFG.supabaseAnonKey) return DEFAULTS;
-    const [prices, reviews, passes, areas] = await Promise.all([
-      fetchTable('prices', 'sort_order.asc,created_at.asc'),
-      fetchTable('reviews', 'reviewed_on.desc,created_at.desc'),
-      fetchTable('passes', 'passed_on.desc,created_at.desc'),
-      fetchTable('areas', 'sort_order.asc,name.asc'),
-    ]);
-    return { prices, reviews, passes, areas };
+    const names = Object.keys(TABLES);
+    const rows = await Promise.all(names.map(fetchTable));
+    return Object.fromEntries(names.map((n, i) => [n, rows[i]]));
   };
-  const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 5000));
-  Promise.race([loadContent(), timeout])
-    .then(render)
-    .catch((err) => { console.warn('Safe-Gen: showing built-in content:', err.message); render(DEFAULTS); });
+  if (Object.values(TABLES).some((t) => t.needed)) {
+    const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 5000));
+    Promise.race([loadContent(), timeout])
+      .then(render)
+      .catch((err) => { console.warn('Safe-Gen: showing built-in content:', err.message); render(DEFAULTS); });
+  }
 
   $('[data-year]').textContent = new Date().getFullYear();
 })();

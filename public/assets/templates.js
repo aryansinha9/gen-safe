@@ -3,7 +3,6 @@
 window.SafeGen = (() => {
   const el = (tag, style, html) => { const e = document.createElement(tag); if (style) e.style.cssText = style; if (html != null) e.innerHTML = html; return e; };
   const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
-  const WA = 'https://wa.me/61470452803';
   const CHECK = '<svg width="16" height="16" viewBox="0 0 256 256" fill="#3fcf74" style="flex:none;margin-top:2px" aria-hidden="true"><path d="M229.7 77.7l-128 128a8 8 0 0 1-11.4 0l-56-56a8 8 0 0 1 11.4-11.4L96 188.7 218.3 66.3a8 8 0 0 1 11.4 11.4Z"></path></svg>';
 
   /* ---------- Formatting ---------- */
@@ -31,9 +30,10 @@ window.SafeGen = (() => {
   };
 
   /* ---------- Price card ---------- */
+  // Also the option text in the enquiry form's “I’m interested in” list.
+  const packageLabel = (p) => `${p.name} · ${Number(p.duration) || 60} min · $${p.price}`;
   const priceCard = (p) => {
     const f = !!p.featured;
-    const dur = Number(p.duration) || 60;
     const card = el('div', `position:relative;padding:28px;border-radius:18px;background:${f ? 'linear-gradient(170deg,#2c1d25,#1d1e2c 60%)' : '#1b1d2b'};box-shadow:${f ? '0 0 0 1px #E3262B,0 30px 70px rgba(227,38,43,.16)' : '0 0 0 1px #292b31'};display:flex;flex-direction:column;gap:20px;transition:transform .3s`,
       `<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;min-height:24px">
          <span style="font:600 13px var(--font-body);color:#b2b6ca">${esc(p.name)}</span>
@@ -48,7 +48,7 @@ window.SafeGen = (() => {
        <div style="display:flex;flex-direction:column;gap:10px;flex:1">
          ${(p.features || []).map((it) => `<div style="display:flex;gap:10px;align-items:start;font:400 14px/1.45 var(--font-body);color:#cfd3e5">${CHECK}${esc(it)}</div>`).join('')}
        </div>
-       <a href="${WA}?text=${encodeURIComponent(`Hi Safe-Gen, I'd like to book the ${p.name} (${dur} min, $${p.price}).`)}" target="_blank" rel="noopener" class="btn btn-block ${f ? 'btn-primary' : 'btn-secondary'}" style="padding:12px;font-size:14px;${f ? 'border-color:#E3262B;background:#E3262B;color:#f3f5fe' : ''}">Book now</a>`);
+       <a href="/contact?interest=${encodeURIComponent(packageLabel(p))}" class="btn btn-block ${f ? 'btn-primary' : 'btn-secondary'}" style="padding:12px;font-size:14px;${f ? 'border-color:#E3262B;background:#E3262B;color:#f3f5fe' : ''}">Book now</a>`);
     card.className = 'sg-package';
     return card;
   };
@@ -86,5 +86,5 @@ window.SafeGen = (() => {
     return b;
   };
 
-  return { el, esc, WA, CHECK, reviewDate, passDate, initial, fillSlot, priceCard, passCard, reviewBlock, areaPill };
+  return { el, esc, CHECK, packageLabel, reviewDate, passDate, initial, fillSlot, priceCard, passCard, reviewBlock, areaPill };
 })();
