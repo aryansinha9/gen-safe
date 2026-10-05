@@ -85,6 +85,16 @@ section[id] { scroll-margin-top: 90px; }
 .sg-form-done h3 { margin: 0; font: italic 800 28px 'Saira', sans-serif; color: #f3f5fe; }
 .sg-form-done p { margin: 0 0 6px; max-width: 340px; font: 400 15px/1.6 var(--font-body); color: #b2b6ca; }
 
+/* Footer credit: Ananta Systems infinity link (centred in the footer's bottom bar) */
+.infinity-link { display: inline-flex; justify-content: center; align-items: center; width: 90px; height: 90px; border-radius: 50%; color: #75798c; background-color: transparent; transition: all .4s cubic-bezier(.175, .885, .32, 1.275); text-decoration: none; position: relative; z-index: 10; cursor: pointer; }
+.infinity-icon { width: 60px; height: 60px; transition: all .4s ease; }
+.infinity-link:hover { color: #f3f5fe; background-color: rgba(255, 255, 255, .1); transform: scale(1.15) translateY(-2px); box-shadow: 0 10px 20px -5px rgba(0, 0, 0, .3), 0 0 15px rgba(255, 255, 255, .2); }
+.infinity-link:hover .infinity-icon { filter: drop-shadow(0 0 8px rgba(255, 255, 255, .6)); animation: sgInfinityFloat 2.5s ease-in-out infinite; }
+.infinity-link:active { transform: scale(.95); }
+.infinity-link:focus-visible { outline: 2px solid #ff4a4f; outline-offset: 2px; }
+@keyframes sgInfinityFloat { 0%, 100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-1.5px) scale(1.02); } }
+@media (prefers-reduced-motion: reduce) { .infinity-link:hover .infinity-icon { animation: none; } }
+
 /* ---------- Responsive fixes (the design export clips on narrow screens) ---------- */
 @media (max-width: 1180px) {
   .sg-reviews .sg-span2 { grid-column: 1 / -1 !important; }
@@ -122,5 +132,8 @@ section[id] { scroll-margin-top: 90px; }
   .sg-enquiry { padding: 20px; }
   .sg-form-grid { grid-template-columns: 1fr; }
   .sg-footer { padding: 48px 16px 24px !important; }
+  .sg-footbar { grid-template-columns: 1fr !important; justify-items: center; text-align: center; gap: 6px !important; }
+  .sg-footbar .infinity-link { order: -1; }
+  .sg-footbar-links { justify-content: center !important; }
   .sg-marquee span { font-size: 44px !important; }
 }
